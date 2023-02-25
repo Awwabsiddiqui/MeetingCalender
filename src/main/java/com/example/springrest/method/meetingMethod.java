@@ -8,10 +8,9 @@ import java.sql.Statement;
 
 public class meetingMethod {
 	public static Connection DBconn() throws Exception {
+//replace meetingcalender with b6bmryp3uei8fahjfmde.meetingcalender
 	Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mainer", "root", "16200913");
-//		Connection conn = DriverManager.getConnection(
-//				"jdbc:mysql://b6bmryp3uei8fahjfmde-mysql.services.clever-cloud.com/b6bmryp3uei8fahjfmde", "usiodlmzha0y5xb9",
-//				"AAYuYbhQMSp3ruuRxysA");
+//		Connection conn = DriverManager.getConnection("jdbc:mysql://b6bmryp3uei8fahjfmde-mysql.services.clever-cloud.com/b6bmryp3uei8fahjfmde", "usiodlmzha0y5xb9","AAYuYbhQMSp3ruuRxysA");
 		return conn;
 	}
 

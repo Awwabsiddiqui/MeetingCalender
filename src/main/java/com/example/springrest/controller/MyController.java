@@ -32,7 +32,14 @@ public class MyController {
 	public String register(@RequestParam(required = true, value = "name") String name) throws Exception {
 		return meetingMethod.register(name);
 	}
-
+	@GetMapping("/registerJPA")
+	public String registerJPA(@RequestParam(required = true, value = "name") String name) throws Exception {
+		Ent entity = new Ent();
+		entity.setName(name);
+		entity.setMeeting("");
+		Repository.save(entity);
+		return "registered";
+	}
 
 	@GetMapping("/bookMeeting")
 	public String bookMeeting(@RequestParam(required = true, value = "yourName") String yourName,

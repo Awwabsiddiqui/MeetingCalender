@@ -3,13 +3,14 @@ package com.example.springrest.method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 public class meetingMethod {
+
+
 	public static Connection DBconn() throws Exception {
 //replace meetingcalender with b6bmryp3uei8fahjfmde.meetingcalender
-	Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mainer", "root", "16200913");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mainer", "root", "16200913");
 //		Connection conn = DriverManager.getConnection("jdbc:mysql://b6bmryp3uei8fahjfmde-mysql.services.clever-cloud.com/b6bmryp3uei8fahjfmde", "usiodlmzha0y5xb9","AAYuYbhQMSp3ruuRxysA");
 		return conn;
 	}
@@ -19,42 +20,38 @@ public class meetingMethod {
 		try {
 			conn = DBconn();
 			Statement stmt = conn.createStatement();
-			stmt.executeUpdate(
-					"Insert into meetingcalender(name,meeting) values ('" + name + "' , '')");
+			stmt.executeUpdate("Insert into meetingcalender(name,meeting) values ('" + name + "' , '')");
 		} catch (Exception e) {
 //			e.printStackTrace();
 			return e.getLocalizedMessage();
-		}finally {
+		} finally {
 			conn.close();
 		}
 
 		return "Registered Successfully";
 	}
 
-	public static String bookMeeting(String from, String to, String Date , String Time) throws Exception {
-		
-		
-			String meetingTime =Date+"|"+Time;
+	public static String bookMeeting(String from, String to, String Date, String Time) throws Exception {
 
-			Connection conn = DBconn();
-			Statement stmt = conn.createStatement();
+		String meetingTime = Date + "|" + Time;
 
-			String meetingValTo = "";
-			String[] meetingArrTo = null;
+		Connection conn = DBconn();
+		Statement stmt = conn.createStatement();
 
-			String meetingValFrom = "";
-			String[] meetingArrFrom = null;
-			try {
-			ResultSet rsTo = stmt
-					.executeQuery("SELECT * FROM  meetingcalender WHERE name='" + to + "'");
+		String meetingValTo = "";
+		String[] meetingArrTo = null;
+
+		String meetingValFrom = "";
+		String[] meetingArrFrom = null;
+		try {
+			ResultSet rsTo = stmt.executeQuery("SELECT * FROM  meetingcalender WHERE name='" + to + "'");
 			while (rsTo.next()) {
 				meetingValTo = rsTo.getString("meeting");
 				meetingArrTo = meetingValTo.split("\\,");
 				break;
 			}
 
-			ResultSet rsFrom = stmt
-					.executeQuery("SELECT * FROM  meetingcalender WHERE name='" + from + "'");
+			ResultSet rsFrom = stmt.executeQuery("SELECT * FROM  meetingcalender WHERE name='" + from + "'");
 			while (rsFrom.next()) {
 				meetingValFrom = rsFrom.getString("meeting");
 				meetingArrFrom = meetingValFrom.split("\\,");
@@ -77,10 +74,10 @@ public class meetingMethod {
 						return "you have a meeting already booked with : " + meetingArrFrom[i].split("@")[0];
 					}
 				}
-				stmt.executeUpdate("UPDATE meetingcalender SET meeting = '" + meetingValTo + from + "@"
-						+ meetingTime + ",' WHERE name = '" + to + "'");
-				stmt.executeUpdate("UPDATE meetingcalender SET meeting = '" + meetingValFrom + to + "@"
-						+ meetingTime + ",' WHERE name = '" + from + "'");
+				stmt.executeUpdate("UPDATE meetingcalender SET meeting = '" + meetingValTo + from + "@" + meetingTime
+						+ ",' WHERE name = '" + to + "'");
+				stmt.executeUpdate("UPDATE meetingcalender SET meeting = '" + meetingValFrom + to + "@" + meetingTime
+						+ ",' WHERE name = '" + from + "'");
 
 			}
 
@@ -89,7 +86,6 @@ public class meetingMethod {
 			conn.close();
 		}
 	}
-
 //	public static void main(String args[]) throws Exception {
 ////		System.out.println(bookMeeting("awwab", "faizan", "25-02-2023|08"));
 ////		System.out.println(register("awwab"));

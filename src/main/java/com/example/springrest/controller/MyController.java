@@ -18,9 +18,12 @@ public class MyController {
 
 	@GetMapping("/")
 	public String[] homepage() {
-		String[] arr = new String[] { "http://localhost:8080", "http://localhost:8080/register?name=",
+		String[] arr = new String[] { "http://localhost:8080",
+				"http://localhost:8080/register?name=",
+				"http://localhost:8080/registerJPA?name=",
 				"http://localhost:8080/bookMeeting?yourName=&meeetingWith=&meetingDate=&meetingTime",
-				"http://localhost:8080/allMeetings", "http://localhost:8080/byName?name=",
+				"http://localhost:8080/allMeetings",
+				"http://localhost:8080/byName?name=",
 				"http://localhost:8080/bookMeetingJPA?yourName=&meeetingWith=&meetingDate=&meetingTime=" };
 		return arr;
 	}
@@ -28,6 +31,14 @@ public class MyController {
 	@GetMapping("/register")
 	public String register(@RequestParam(required = true, value = "name") String name) throws Exception {
 		return meetingMethod.register(name);
+	}
+	@GetMapping("/registerJPA")
+	public String registerJPA(@RequestParam(required = true, value = "name") String name) throws Exception {
+		Ent entity = new Ent();
+		entity.setName(name);
+		entity.setMeeting("");
+		Repository.save(entity);
+		return "registered";
 	}
 
 	@GetMapping("/bookMeeting")
@@ -80,7 +91,7 @@ public class MyController {
 		String[] meetingArrTo = meetingValTo.split("\\,");
 
 		if (meetingArrFrom == null) {
-			return "User does not exist , Please register : http://localhost:8080/register?name=";
+			return "User does not exist , Please register : http://localhost:8080/registerJPA?name=";
 		} else if (meetingArrTo == null) {
 			return "User does not exist";
 		} else {

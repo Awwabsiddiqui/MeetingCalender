@@ -7,7 +7,6 @@ import java.sql.Statement;
 
 public class meetingMethod {
 
-
 	public static Connection DBconn() throws Exception {
 //replace meetingcalender with b6bmryp3uei8fahjfmde.meetingcalender
 		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mainer", "root", "16200913");
@@ -29,6 +28,26 @@ public class meetingMethod {
 		}
 
 		return "Registered Successfully";
+	}
+
+	public static String registerHibernate(String name) {
+		try {
+			new DOMeeting().doRegister(name);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Some Error";
+		}
+		return "Registered Successfully";
+	}
+
+	public static String updateColumnByName(String name) {
+		try {
+			new DOMeeting().updateEnt(name);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Some Error";
+		}
+		return "Updated Successfully";
 	}
 
 	public static String bookMeeting(String from, String to, String Date, String Time) throws Exception {

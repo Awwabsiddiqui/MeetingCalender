@@ -3,9 +3,13 @@ package com.example.springrest.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.springrest.entity.Ent;
 import com.example.springrest.entity.Repository;
@@ -18,12 +22,10 @@ public class MyController {
 
 	@GetMapping("/")
 	public String[] homepage() {
-		String[] arr = new String[] { "http://localhost:8080",
-				"http://localhost:8080/register?name=",
-				"http://localhost:8080/registerJPA?name=",
+		String[] arr = new String[] { "http://localhost:8080", "http://localhost:8080/register?name=",
+				"http://localhost:8080/registerHibernate?name=", "http://localhost:8080/registerJPA?name=",
 				"http://localhost:8080/bookMeeting?yourName=&meeetingWith=&meetingDate=&meetingTime",
-				"http://localhost:8080/allMeetings",
-				"http://localhost:8080/byName?name=",
+				"http://localhost:8080/allMeetings", "http://localhost:8080/byName?name=",
 				"http://localhost:8080/bookMeetingJPA?yourName=&meeetingWith=&meetingDate=&meetingTime=" };
 		return arr;
 	}
@@ -32,6 +34,7 @@ public class MyController {
 	public String register(@RequestParam(required = true, value = "name") String name) throws Exception {
 		return meetingMethod.register(name);
 	}
+
 	@GetMapping("/registerJPA")
 	public String registerJPA(@RequestParam(required = true, value = "name") String name) throws Exception {
 		Ent entity = new Ent();
@@ -39,6 +42,16 @@ public class MyController {
 		entity.setMeeting("");
 		Repository.save(entity);
 		return "registered";
+	}
+
+	@GetMapping("/registerHibernate")
+	public String registerHibernate(@RequestParam(required = true, value = "name") String name) throws Exception {
+		return meetingMethod.registerHibernate(name);
+	}
+
+	@GetMapping("/updateColumnByName")
+	public String updateColumnByName(@RequestParam(required = true, value = "name") String name) throws Exception {
+		return meetingMethod.updateColumnByName(name);
 	}
 
 	@GetMapping("/bookMeeting")
@@ -125,5 +138,24 @@ public class MyController {
 
 		return true;
 	}
+}
 
+@Controller
+class thymeController {
+	@Autowired
+	private Repository Repository;
+
+	@RequestMapping("/input")
+	public String index() {
+		return "input";
+	}
+
+	@RequestMapping(value = "/output")
+	public ModelAndView index(@ModelAttribute Ent Ent) {
+		Repository.save(Ent);
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("output");
+		modelAndView.addObject("Ent", Ent);
+		return modelAndView;
+	}
 }

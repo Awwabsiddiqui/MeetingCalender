@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="ISO-8859-1" />
+	<title>List</title>
+</head>
+
+<body>
+	<h2 th:text="${Ent.name}"></h2>
+
+	<html xmlns:th="https://thymeleaf.org">
+	<table>
+		<tr>
+			<th>
+				User Name
+			</th>
+			<th>
+				MEeting Date
+			</th>
+			<th>
+				meeting with
+			</th>
+		</tr>
+		<tr th:each="ent : ${list}">
+			<td th:text="${ent.name}"> </td>
+			<td th:text="${ent.meetingDate}"> </td>
+			<td th:text="${ent.meetingWith}"> </td>
+		</tr>
+	</table>
+
+	</html>
+
+</body>
+
+</html>

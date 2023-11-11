@@ -11,7 +11,7 @@
 
 	<html xmlns:th="https://thymeleaf.org">
 	
-	 <span th:if="${Status == 'Created Successfully'}">
+	 <span th:if="${Status == 'Meeting Booked'}">
 
 	<table>
 		<tr>
@@ -43,7 +43,9 @@
 	</table>
 
 	</span>
-    <span th:unless="${Status == 'Created Successfully'}">FAILED</span>
+    <span th:unless="${Status == 'Created Successfully'}">
+		<h4 th:text="${Status}"></h4>
+	</span>
 	
 	</html>
 

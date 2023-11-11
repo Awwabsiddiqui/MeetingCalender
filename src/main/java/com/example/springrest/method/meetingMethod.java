@@ -5,6 +5,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import org.springframework.stereotype.Component;
+
+import com.example.springrest.entity.Ent;
+
+@Component
 public class meetingMethod {
 
 	public static Connection DBconn() throws Exception {
@@ -38,6 +43,17 @@ public class meetingMethod {
 			return "Some Error";
 		}
 		return "Registered Successfully";
+	}
+	
+	public static String registerHibernateEntity(Ent Ent) {
+		String status="";
+		try {
+			 status = new DOMeeting().doRegisterEntity(Ent);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Some Error";
+		}
+		return status;
 	}
 
 	public static String updateColumnByName(String name) {

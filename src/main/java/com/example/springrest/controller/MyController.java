@@ -231,7 +231,7 @@ public class MyController {
 			status="Please Register at http://localhost:8080/input";
 		} else if (!doesMEetingWithExist) {
 			//status = meetingMethod.registerHibernateEntity(Ent);
-			status="Meeting With entity does not exist";
+			status="MeetingWith entity does not exist";
 		} else {
 			status=DOMeeting.bookMeeting(Ent);
 		}

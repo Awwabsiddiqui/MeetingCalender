@@ -16,7 +16,10 @@
 				User Name
 			</th>
 			<th>
-				MEeting Date
+				Meeting Start Date
+			</th>
+			<th>
+				Meeting End Date
 			</th>
 			<th>
 				meeting with
@@ -25,6 +28,7 @@
 		<tr th:each="ent : ${list}">
 			<td th:text="${ent.name}"> </td>
 			<td th:text="${ent.meetingDate}"> </td>
+			<td th:text="${ent.meetingEndDate}"> </td>
 			<td th:text="${ent.meetingWith}"> </td>
 		</tr>
 	</table>

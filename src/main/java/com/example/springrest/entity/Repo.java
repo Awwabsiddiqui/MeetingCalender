@@ -17,7 +17,13 @@ public boolean existsByName(String name);
 
 public boolean existsByMeetingDate(LocalDateTime meetingDate);
 
-public Optional<Ent> findTopByMeetingWithAndMeetingDate(String meetingWith , LocalDateTime meetingDate);
+public Optional<Ent> findTopByMeetingWithAndMeetingDate(String meetingWith , Date meetingDate);
+
+public Optional<Ent> findTopByNameAndMeetingDate(String name , Date meetingDate);
 
 public Optional<Ent> findTopByMeetingDate(Date meetingDate);
+
+public Optional<Ent> findTopByNameAndMeetingDateLessThanEqualAndMeetingEndDateGreaterThanEqual(String name , Date meetingStartDate , Date meetingEndDate);
+//select * from meetingcalenderhibernate where name=? and meeting_date>=? and meeting_end_date<=? limit ?
+
 }

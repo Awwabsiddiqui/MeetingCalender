@@ -17,12 +17,13 @@ import org.springframework.stereotype.Component;
 
 import com.example.springrest.entity.Ent;
 import com.example.springrest.entity.Repo;
+
 @Component
 public class DOMeeting {
-	
+
 	@Autowired
 	private Repo Repository;
-	
+
 	public void doRegister(String name) {
 		Session session = HibernateUtil.getSession();
 		Transaction transaction = null;
@@ -30,14 +31,13 @@ public class DOMeeting {
 			transaction = session.beginTransaction();
 			Ent Ent = new Ent();
 			Ent.setName(name);
-			
-			
+
 			Criteria criteria = session.createCriteria(Ent.class);
 			List results = criteria.add(Restrictions.eq("name", name)).list();
-			System.out.println("List ::: "+results);
-			if(results.isEmpty()) {
+			System.out.println("List ::: " + results);
+			if (results.isEmpty()) {
 				session.saveOrUpdate(Ent);
-			}else {
+			} else {
 				System.out.println("already present !!!");
 			}
 			transaction.commit();
@@ -48,27 +48,27 @@ public class DOMeeting {
 			session.close();
 		}
 	}
-	
+
 	public String doRegisterEntity(Ent Ent) {
 		Session session = HibernateUtil.getSession();
 		Transaction transaction = null;
-		String status="Created Successfully";
+		String status = "Created Successfully";
 		try {
 			transaction = session.beginTransaction();
-			
+
 //			Criteria criteria = session.createCriteria(Ent.class);
 //			List results = criteria.add(Restrictions.eq("name", Ent.getName())).list();
 //			System.out.println("List ::: "+results);
-			
+
 			boolean doesUserExist = Repository.existsByName(Ent.getName());
-			System.out.println("doesUserExist : "+doesUserExist);
+			System.out.println("doesUserExist : " + doesUserExist);
 //			if(!doesUserExist   /*results.isEmpty()*/) {
-				session.saveOrUpdate(Ent);
+			session.saveOrUpdate(Ent);
 //			}else {
 //				System.out.println("already present !!!");
 //				status="Already Present";
 //			}
-			
+
 			transaction.commit();
 		} catch (HibernateException e) {
 			transaction.rollback();
@@ -78,7 +78,6 @@ public class DOMeeting {
 		}
 		return status;
 	}
-
 
 	public List<Ent> getEnts() {
 		Session session = HibernateUtil.getSession();
@@ -159,7 +158,7 @@ public class DOMeeting {
 
 		Criteria criteria = session.createCriteria(Ent.class);
 		List<Ent> list = criteria.add(Restrictions.eq("name", name)).list();
-		
+
 		for (Ent ent : list) {
 			session.remove(ent);
 		}
@@ -167,7 +166,7 @@ public class DOMeeting {
 		session.close();
 		return 1;
 	}
-	
+
 	public List findEntByName(String name) {
 		if (name.equals(""))
 			return null;
@@ -178,17 +177,17 @@ public class DOMeeting {
 
 		return results;
 	}
-	
+
 	public String bookMeeting(Ent ent) {
-		String status="";
-		Ent meetingAlreadyWith = Repository.findTopByMeetingDate(ent.getMeetingDate()).orElse(new Ent());
-		if(meetingAlreadyWith!=null && meetingAlreadyWith.getMeetingWith()!=null  && !meetingAlreadyWith.getMeetingWith().equals("")) {
-			status="Meeting already booked with : "+meetingAlreadyWith.getMeetingWith();
-		}else {
+		String status = "";
+		Ent meetingAlreadyWith = Repository.findTopByNameAndMeetingDateLessThanEqualAndMeetingEndDateGreaterThanEqual(ent.getName(), ent.getMeetingDate(), ent.getMeetingDate()).orElse(new Ent());
+		if (meetingAlreadyWith != null && meetingAlreadyWith.getMeetingWith() != null && !meetingAlreadyWith.getMeetingWith().equals("")) {
+			status = "Meeting already booked with : " + meetingAlreadyWith.getMeetingWith();
+		} else {
 			Ent entret = Repository.save(ent);
 			status = "Meeting Booked";
 		}
 		return status;
 	}
-	
+
 }

@@ -1,36 +1,26 @@
 <html lang="en">
-
+<style>
+	.center {
+		border: 2px solid;
+		margin: auto;
+		width: 50%;
+		padding: 15px;
+		margin-top:200px;
+	}
+</style>
 <head>
 	<title>Register Page</title>
 </head>
 <body>
-	<!--<form action="output" method="post">
-		<table align="center">
-			<tr>
-				<td><label for="user-name">User Name</label></td>
-				<td><input type="text" name="name"></input></td>
-			</tr>
-			<tr>
-				<td><label for="meetingDate">Meeting Date</label></td>
-  				 <td><input type="date" id="meetingDate" name="meetingDate" ></td>
-  				 <input type="text"  id="meetingDate" th:field="${Ent.meetingDate}"/>
-  				<td><input type="time" id="meetingTime" name="meetingTime"></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="submit" value="Submit"></input></td>
-			</tr>
-		</table>
-	</form>-->
-	
+	<div class="center">
 	<form action="#" th:action="@{/output}" th:object="${Ent}" method="post" >
 		NAME : <input type="text" th:field="*{name}">		
 		<!--Meeting With : <input type="text" th:field="*{name}">	-->
 		<!--Date : <input type="datetime-local" th:field="*{meetingDate}">	-->
 		<!--Time : <input type="time" th:field="*{meetingTime}">	-->
-		
-		<button type="submit">SAVE</button>
+		<button style="margin-left: 10px;" type="submit">SAVE</button>
 	</form>
+	</div>
 	
 </body>
 

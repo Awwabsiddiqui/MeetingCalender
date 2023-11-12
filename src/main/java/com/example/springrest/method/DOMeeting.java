@@ -184,7 +184,16 @@ public class DOMeeting {
 		if (meetingAlreadyWith != null && meetingAlreadyWith.getMeetingWith() != null && !meetingAlreadyWith.getMeetingWith().equals("")) {
 			status = "Meeting already booked with : " + meetingAlreadyWith.getMeetingWith();
 		} else {
-			Ent entret = Repository.save(ent);
+			Repository.save(ent);
+			
+			Ent meetingWithEnt = new Ent();
+			meetingWithEnt.setName(ent.getMeetingWith());
+			meetingWithEnt.setMeetingWith(ent.getName());
+			meetingWithEnt.setMeetingDate(ent.getMeetingDate());
+			meetingWithEnt.setMeetingEndDate(ent.getMeetingEndDate());
+			
+			Repository.save(meetingWithEnt);
+			
 			status = "Meeting Booked";
 		}
 		return status;

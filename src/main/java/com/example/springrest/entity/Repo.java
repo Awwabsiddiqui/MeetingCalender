@@ -8,22 +8,26 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
-public interface Repo extends JpaRepository<Ent, Integer> , CrudRepository<Ent, Integer>{
-public List<Ent> findByName(String name);
+public interface Repo extends JpaRepository<Ent, Integer>, CrudRepository<Ent, Integer> {
+	public List<Ent> findByName(String name);
 
-public boolean existsById(long Id);
+	public Ent findTopByName(String name);
 
-public boolean existsByName(String name);
+	public boolean existsById(long Id);
 
-public boolean existsByMeetingDate(LocalDateTime meetingDate);
+	public boolean existsByName(String name);
+	
+	public boolean existsByNameAndPassword(String name , String password);
 
-public Optional<Ent> findTopByMeetingWithAndMeetingDate(String meetingWith , Date meetingDate);
+	public boolean existsByMeetingDate(LocalDateTime meetingDate);
 
-public Optional<Ent> findTopByNameAndMeetingDate(String name , Date meetingDate);
+	public Optional<Ent> findTopByMeetingWithAndMeetingDate(String meetingWith, Date meetingDate);
 
-public Optional<Ent> findTopByMeetingDate(Date meetingDate);
+	public Optional<Ent> findTopByNameAndMeetingDate(String name, Date meetingDate);
 
-public Optional<Ent> findTopByNameAndMeetingDateLessThanEqualAndMeetingEndDateGreaterThanEqual(String name , Date meetingStartDate , Date meetingEndDate);
-//select * from meetingcalenderhibernate where name=? and meeting_date>=? and meeting_end_date<=? limit ?
+	public Optional<Ent> findTopByMeetingDate(Date meetingDate);
+
+	public Optional<Ent> findTopByNameAndMeetingDateLessThanEqualAndMeetingEndDateGreaterThanEqual(String name, Date meetingStartDate, Date meetingEndDate);
+//select * from meetingcalenderhibernate where name=? and meeting_date>=? and meeting_end_date<=? limit 1
 
 }

@@ -16,19 +16,25 @@
 	<table>
 		<tr>
 			<td>
-				<h4>Name: </h4>
-			</td>
-			<td>
-				<h4 th:text="${Ent.name}"></h4>
+				<h4 th:text="${Ent.name}"></h4> with <h4 th:text="${Ent.meetingWith}"></h4>
 			</td>
 		</tr>
 		
 		<tr>
 			<td>
-				<h4>Meeting</h4>
+				<h4>Meeting Start time</h4>
 			</td>
 			<td>
-				<h4 th:text="${Ent.meetingDate}"></h4>
+				<h4 th:text="${#dates.format(Ent.meetingDate	, 'dd-MMM-yyyy hh:mm')}"></h4>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				<h4>Meeting End time</h4>
+			</td>
+			<td>
+				<h4 th:text="${#dates.format(Ent.meetingEndDate	, 'dd-MMM-yyyy hh:mm')}"></h4>
 			</td>
 		</tr>
 		

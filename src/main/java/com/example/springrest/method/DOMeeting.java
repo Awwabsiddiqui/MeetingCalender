@@ -1,8 +1,5 @@
 package com.example.springrest.method;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -55,19 +52,11 @@ public class DOMeeting {
 		String status = "Created Successfully";
 		try {
 			transaction = session.beginTransaction();
-
 //			Criteria criteria = session.createCriteria(Ent.class);
 //			List results = criteria.add(Restrictions.eq("name", Ent.getName())).list();
 //			System.out.println("List ::: "+results);
 
-			boolean doesUserExist = Repository.existsByName(Ent.getName());
-			System.out.println("doesUserExist : " + doesUserExist);
-//			if(!doesUserExist   /*results.isEmpty()*/) {
 			session.saveOrUpdate(Ent);
-//			}else {
-//				System.out.println("already present !!!");
-//				status="Already Present";
-//			}
 
 			transaction.commit();
 		} catch (HibernateException e) {
@@ -180,22 +169,29 @@ public class DOMeeting {
 
 	public String bookMeeting(Ent ent) {
 		String status = "";
-		Ent meetingAlreadyWith = Repository.findTopByNameAndMeetingDateLessThanEqualAndMeetingEndDateGreaterThanEqual(ent.getName(), ent.getMeetingDate(), ent.getMeetingDate()).orElse(new Ent());
-		if (meetingAlreadyWith != null && meetingAlreadyWith.getMeetingWith() != null && !meetingAlreadyWith.getMeetingWith().equals("")) {
-			status = "Meeting already booked with : " + meetingAlreadyWith.getMeetingWith();
-		} else {
-			Repository.save(ent);
-			
-			Ent meetingWithEnt = new Ent();
-			meetingWithEnt.setName(ent.getMeetingWith());
-			meetingWithEnt.setMeetingWith(ent.getName());
-			meetingWithEnt.setMeetingDate(ent.getMeetingDate());
-			meetingWithEnt.setMeetingEndDate(ent.getMeetingEndDate());
-			
-			Repository.save(meetingWithEnt);
-			
-			status = "Meeting Booked";
+		Date today = new Date();
+		boolean validateMeetingTime = ent.getMeetingDate().after(today) && ent.getMeetingEndDate().after(today) && ent.getMeetingDate().before(ent.getMeetingEndDate());
+		if(validateMeetingTime) {
+			Ent meetingAlreadyWith = Repository.findTopByNameAndMeetingDateLessThanEqualAndMeetingEndDateGreaterThanEqual(ent.getName(), ent.getMeetingDate(), ent.getMeetingDate()).orElse(new Ent());
+			if (meetingAlreadyWith != null && meetingAlreadyWith.getMeetingWith() != null && !meetingAlreadyWith.getMeetingWith().equals("")) {
+				status = "Meeting already booked with : " + meetingAlreadyWith.getMeetingWith();
+			} else {
+				Repository.save(ent);
+
+				Ent meetingWithEnt = new Ent();
+				meetingWithEnt.setName(ent.getMeetingWith());
+				meetingWithEnt.setMeetingWith(ent.getName());
+				meetingWithEnt.setMeetingDate(ent.getMeetingDate());
+				meetingWithEnt.setMeetingEndDate(ent.getMeetingEndDate());
+
+				Repository.save(meetingWithEnt);
+
+				status = "Meeting Booked";
+			}
+		}else {
+			status = "Invalid Time Entered";
 		}
+
 		return status;
 	}
 

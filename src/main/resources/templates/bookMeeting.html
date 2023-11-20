@@ -18,6 +18,8 @@
 		<form style="margin-left:25%;" action="#" th:action="@{/saveBookMeeting}" th:object="${Ent}" method="post">
 			NAME : <input type="text" th:field="*{name}">
 			<br>
+			Password : <input type="password" th:field="*{password}">
+			<br>
 			Meeting With : <input type="text" th:field="*{meetingWith}">
 			<br>
 			StartDate : <input type="datetime-local" th:field="*{meetingDate}">

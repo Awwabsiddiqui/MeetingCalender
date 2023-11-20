@@ -1,18 +1,23 @@
 package com.example.springrest.entity;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-
-import javax.persistence.*;
-import javax.print.attribute.standard.DateTimeAtCompleted;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Data
@@ -27,6 +32,7 @@ public class Ent {
 	public long id;
 
 	private String name;
+	private String password;
 
 	@Column(name = "meeting_with")
 	private String meetingWith;
@@ -47,5 +53,5 @@ public class Ent {
 	// @DateTimeFormat(pattern = "dd/MM/yyyy")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	Date meetingEndDate;
-
+	
 }

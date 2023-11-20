@@ -1,11 +1,14 @@
 package com.example.springrest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,18 +23,20 @@ import com.example.springrest.method.meetingMethod;
 public class MyController {
 	@Autowired
 	private Repo Repository;
-	
+
 	@Autowired
 	DOMeeting DOMeeting;
-	
+
 	@Autowired
 	meetingMethod meetingMethod;
 
-	@GetMapping("/")
+	@GetMapping("/oldAPI")
 	@ResponseBody
 	public String[] homepage() {
-		String[] arr = new String[] { "http://localhost:8080", "http://localhost:8080/register?name=",
-				"http://localhost:8080/registerHibernate?name=", "http://localhost:8080/registerJPA?name=",
+		String[] arr = new String[] { "http://localhost:8080/oldAPI",
+				"http://localhost:8080/register?name=",
+				"http://localhost:8080/registerHibernate?name=",
+				"http://localhost:8080/registerJPA?name=",
 				"http://localhost:8080/bookMeeting?yourName=&meeetingWith=&meetingDate=&meetingTime",
 				"http://localhost:8080/allMeetings", "http://localhost:8080/byName?name=",
 				"http://localhost:8080/bookMeetingJPA?yourName=&meeetingWith=&meetingDate=&meetingTime=" };
@@ -68,10 +73,8 @@ public class MyController {
 
 	@GetMapping("/bookMeeting")
 	@ResponseBody
-	public String bookMeeting(@RequestParam(required = true, value = "yourName") String yourName,
-			@RequestParam(required = true, value = "meeetingWith") String meeetingWith,
-			@RequestParam(required = true, value = "meetingDate") String meetingDate,
-			@RequestParam(required = true, value = "meetingTime") String meetingTime) throws Exception {
+	public String bookMeeting(@RequestParam(required = true, value = "yourName") String yourName, @RequestParam(required = true, value = "meeetingWith") String meeetingWith,
+			@RequestParam(required = true, value = "meetingDate") String meetingDate, @RequestParam(required = true, value = "meetingTime") String meetingTime) throws Exception {
 		return meetingMethod.bookMeeting(yourName, meeetingWith, meetingDate, meetingTime);
 	}
 
@@ -93,10 +96,8 @@ public class MyController {
 
 	@GetMapping("/bookMeetingJPA")
 	@ResponseBody
-	public String bookMeetingJPA(@RequestParam(required = true, value = "yourName") String yourName,
-			@RequestParam(required = true, value = "meeetingWith") String meeetingWith,
-			@RequestParam(required = true, value = "meetingDate") String meetingDate,
-			@RequestParam(required = true, value = "meetingTime") String meetingTime) throws Exception {
+	public String bookMeetingJPA(@RequestParam(required = true, value = "yourName") String yourName, @RequestParam(required = true, value = "meeetingWith") String meeetingWith,
+			@RequestParam(required = true, value = "meetingDate") String meetingDate, @RequestParam(required = true, value = "meetingTime") String meetingTime) throws Exception {
 
 		return bookMeetingJPAService(yourName, meeetingWith, meetingDate, meetingTime);
 
@@ -155,13 +156,14 @@ public class MyController {
 		return true;
 	}
 
-	///////////////////////////////////////////UI BASED //////////////////////////////
-	
+	/////////////////////////////////////////// UI BASED
+	/////////////////////////////////////////// //////////////////////////////
+
 	@RequestMapping("/home")
 	public String home() {
 		return "home";
 	}
-	
+
 	@RequestMapping("/input")
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView();
@@ -173,21 +175,13 @@ public class MyController {
 	@RequestMapping(value = "/output")
 	public ModelAndView output(@ModelAttribute Ent Ent) {
 		// Repository.save(Ent);
-		System.out.println(Ent.getName());
-		System.out.println(Ent.getMeetingDate());
-		//System.out.println(Ent.getMeetingTime());
 		String status = "Already Present";
 		boolean doesUserExist = Repository.existsByName(Ent.getName());
-		System.out.println("doesUserExist : " + doesUserExist);
 		if (!doesUserExist) {
-			//status = meetingMethod.registerHibernateEntity(Ent);
-			status=DOMeeting.doRegisterEntity(Ent);
+			// status = meetingMethod.registerHibernateEntity(Ent);
+			status = DOMeeting.doRegisterEntity(Ent);
 		} else {
-			List<Ent> ls = Repository.findByName(Ent.getName());
-			for (Ent ent2 : ls) {
-				System.out.println(ent2.getMeetingDate());
-				//System.out.println(ent2.getMeetingTime());
-			}
+			Ent = Repository.findTopByName(Ent.getName());
 		}
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("output");
@@ -204,15 +198,21 @@ public class MyController {
 	@RequestMapping(value = "/listUser")
 	public ModelAndView singleStuddent(@ModelAttribute Ent Ent) {
 		ModelAndView modelAndView = new ModelAndView();
-//		List<Ent> ls = Repository.findAll();
-//		List<Ent> ls = Repository.findByName(name);
-		List list = new DOMeeting().findEntByName(Ent.getName());
-		modelAndView.setViewName("listUser");
+		Ent checkPassword = Repository.findTopByName(Ent.getName());
+		if (checkPassword.getPassword().equals(Ent.getPassword())) {
+			List list = new DOMeeting().findEntByName(Ent.getName());
+			modelAndView.addObject("list", list);
+			modelAndView.addObject("status", "found");
+			modelAndView.setViewName("listUser");
+		} else {
+			modelAndView.addObject("list", new ArrayList<>());
+			modelAndView.addObject("status", "Wrong Password");
+			modelAndView.setViewName("search");
+		}
 		modelAndView.addObject("Ent", Ent);
-		modelAndView.addObject("list", list);
 		return modelAndView;
 	}
-	
+
 	@RequestMapping("/bookMeetingUI")
 	public ModelAndView bookMeeting() {
 		ModelAndView modelAndView = new ModelAndView();
@@ -220,25 +220,64 @@ public class MyController {
 		modelAndView.addObject("Ent", new Ent());
 		return modelAndView;
 	}
-	
+
 	@RequestMapping(value = "/saveBookMeeting")
 	public ModelAndView saveBookMeeting(@ModelAttribute Ent Ent) {
 		String status = "Already Present";
-		boolean doesUserExist = Repository.existsByName(Ent.getName());
-		boolean doesMEetingWithExist = Repository.existsByName(Ent.getMeetingWith());
-		if (!doesUserExist) {
-			//status = meetingMethod.registerHibernateEntity(Ent);
-			status="Please Register at http://localhost:8080/input";
-		} else if (!doesMEetingWithExist) {
-			//status = meetingMethod.registerHibernateEntity(Ent);
-			status="MeetingWith entity does not exist";
+		Ent checkPassword = Repository.findTopByName(Ent.getName());
+		boolean doesMeetingWithExist = Repository.existsByName(Ent.getMeetingWith());
+		if (checkPassword == null || checkPassword.equals(new Ent())) {
+			status = "Please Register at http://localhost:8080/input";
+		} else if (!doesMeetingWithExist) {
+			status = "MeetingWith entity does not exist";
+		} else if (!checkPassword.getPassword().equals(Ent.getPassword())) {
+			status = "Invalid Password";
 		} else {
-			status=DOMeeting.bookMeeting(Ent);
+			status = DOMeeting.bookMeeting(Ent);
 		}
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("saveBookMeeting");
 		modelAndView.addObject("Status", status);
 		modelAndView.addObject("Ent", Ent);
 		return modelAndView;
+	}
+	
+	@GetMapping("/")
+	@ResponseBody
+	public String[] APIHome() {
+		String[] arr = new String[] { 
+				"http://localhost:8080",
+				"http://localhost:8080/registerAPI?name=",
+				"http://localhost:8080/bookMeetingAPI?yourName=&meeetingWith=&meetingDate=&meetingTime",
+				"http://localhost:8080/byNameAPI?name="
+				};
+		return arr;
+	}
+	
+	@PostMapping("/registerAPI")
+	@ResponseBody
+	public String registerAPI(@RequestParam(required = true, value = "name") String name , @RequestBody(required = true) String rb) {
+		String status = "Already Present";
+		Ent Ent = new Ent();
+		Ent.setName(name);
+		Ent.setPassword(name);
+		boolean doesUserExist = Repository.existsByName(name);
+		if (!doesUserExist) {
+			status = DOMeeting.doRegisterEntity(Ent);
+		} else {
+			Ent = Repository.findTopByName(Ent.getName());
+		}
+		return status;
+	}
+	
+	@GetMapping("/byNameAPI")
+	@ResponseBody
+	public List byNameAPI(@RequestParam(required = true, value = "name") String name , @RequestBody(required = true) String rb) {
+		List list = new ArrayList<>();
+		Ent checkPassword = Repository.findTopByName(name);
+		if (checkPassword.getPassword().equals(name)) {
+			list = new DOMeeting().findEntByName(name);
+		}
+		return list;
 	}
 }

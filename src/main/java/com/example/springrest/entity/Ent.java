@@ -47,11 +47,13 @@ public class Ent {
 	@Column(name = "meeting_date", /* nullable = false, */ columnDefinition = "DATE DEFAULT '1900-01-01 00:00'")
 	// @DateTimeFormat(pattern = "dd/MM/yyyy")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	@JsonFormat (pattern = "yyyy-MM-dd HH:mm")
 	Date meetingDate;
 
 	@Column(name = "meeting_end_date", /* nullable = false, */ columnDefinition = "DATE DEFAULT '1900-01-01 00:00'")
 	// @DateTimeFormat(pattern = "dd/MM/yyyy")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	@JsonFormat (pattern = "yyyy-MM-dd HH:mm")
 	Date meetingEndDate;
 	
 }

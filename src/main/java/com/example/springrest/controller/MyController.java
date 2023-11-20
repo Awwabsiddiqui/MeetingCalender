@@ -248,15 +248,15 @@ public class MyController {
 		String[] arr = new String[] { 
 				"http://localhost:8080",
 				"http://localhost:8080/registerAPI?name=",
-				"http://localhost:8080/bookMeetingAPI?yourName=&meeetingWith=&meetingDate=&meetingTime",
-				"http://localhost:8080/byNameAPI?name="
+				"http://localhost:8080/byNameAPI?name=",
+				"http://localhost:8080/bookMeetingAPI"
 				};
 		return arr;
 	}
 	
 	@PostMapping("/registerAPI")
 	@ResponseBody
-	public String registerAPI(@RequestParam(required = true, value = "name") String name , @RequestBody(required = true) String rb) {
+	public String registerAPI(@RequestParam(required = true, value = "name") String name) {
 		String status = "Already Present";
 		Ent Ent = new Ent();
 		Ent.setName(name);
@@ -270,9 +270,9 @@ public class MyController {
 		return status;
 	}
 	
-	@GetMapping("/byNameAPI")
+	@GetMapping(path="/byNameAPI" )
 	@ResponseBody
-	public List byNameAPI(@RequestParam(required = true, value = "name") String name , @RequestBody(required = true) String rb) {
+	public List byNameAPI(@RequestParam(required = true, value = "name") String name) {
 		List list = new ArrayList<>();
 		Ent checkPassword = Repository.findTopByName(name);
 		if (checkPassword.getPassword().equals(name)) {
@@ -280,4 +280,23 @@ public class MyController {
 		}
 		return list;
 	}
+	
+	@PostMapping(path="/bookMeetingAPI" , produces = {"application/json"})
+	@ResponseBody
+	public String bookMeetingAPI(@RequestBody(required = true) Ent Ent) {
+		String status = "Already Present";
+		Ent checkPassword = Repository.findTopByName(Ent.getName());
+		boolean doesMeetingWithExist = Repository.existsByName(Ent.getMeetingWith());
+		if (checkPassword == null || checkPassword.equals(new Ent())) {
+			status = "http://localhost:8080/registerAPI?name=";
+		} else if (!doesMeetingWithExist) {
+			status = "MeetingWith entity does not exist";
+		} else if (!checkPassword.getPassword().equals(Ent.getPassword())) {
+			status = "Invalid Password";
+		} else {
+			status = DOMeeting.bookMeeting(Ent);
+		}
+		return status;
+	}
+	
 }

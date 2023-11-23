@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.example.springrest.entity.Ent;
 import com.example.springrest.entity.Repo;
 import com.example.springrest.method.DOMeeting;
+import com.example.springrest.method.Validation;
 import com.example.springrest.method.meetingMethod;
 
 @Controller
@@ -33,13 +34,9 @@ public class MyController {
 	@GetMapping("/oldAPI")
 	@ResponseBody
 	public String[] homepage() {
-		String[] arr = new String[] { "http://localhost:8080/oldAPI",
-				"http://localhost:8080/register?name=",
-				"http://localhost:8080/registerHibernate?name=",
-				"http://localhost:8080/registerJPA?name=",
-				"http://localhost:8080/bookMeeting?yourName=&meeetingWith=&meetingDate=&meetingTime",
-				"http://localhost:8080/allMeetings", "http://localhost:8080/byName?name=",
-				"http://localhost:8080/bookMeetingJPA?yourName=&meeetingWith=&meetingDate=&meetingTime=" };
+		String[] arr = new String[] { "http://localhost:8080/oldAPI", "http://localhost:8080/register?name=", "http://localhost:8080/registerHibernate?name=",
+				"http://localhost:8080/registerJPA?name=", "http://localhost:8080/bookMeeting?yourName=&meeetingWith=&meetingDate=&meetingTime", "http://localhost:8080/allMeetings",
+				"http://localhost:8080/byName?name=", "http://localhost:8080/bookMeetingJPA?yourName=&meeetingWith=&meetingDate=&meetingTime=" };
 		return arr;
 	}
 
@@ -200,6 +197,7 @@ public class MyController {
 		ModelAndView modelAndView = new ModelAndView();
 		Ent checkPassword = Repository.findTopByName(Ent.getName());
 		if (checkPassword.getPassword().equals(Ent.getPassword())) {
+			List<Ent> x = Repository.findByName(Ent.getName());
 			List list = new DOMeeting().findEntByName(Ent.getName());
 			modelAndView.addObject("list", list);
 			modelAndView.addObject("status", "found");
@@ -241,36 +239,40 @@ public class MyController {
 		modelAndView.addObject("Ent", Ent);
 		return modelAndView;
 	}
-	
+
+	///////////////// REST API BY BODY
+
 	@GetMapping("/")
 	@ResponseBody
 	public String[] APIHome() {
-		String[] arr = new String[] { 
-				"http://localhost:8080",
-				"http://localhost:8080/registerAPI?name=",
-				"http://localhost:8080/byNameAPI?name=",
-				"http://localhost:8080/bookMeetingAPI"
-				};
+		String[] arr = new String[] { "http://localhost:8080", "http://localhost:8080/registerAPI?name=&password=", "http://localhost:8080/byNameAPI?name=", "http://localhost:8080/bookMeetingAPI" };
 		return arr;
 	}
-	
+
 	@PostMapping("/registerAPI")
 	@ResponseBody
-	public String registerAPI(@RequestParam(required = true, value = "name") String name) {
+	public String registerAPI(@RequestParam(required = true, value = "name") String name, @RequestParam(required = true, value = "password") String password) {
 		String status = "Already Present";
 		Ent Ent = new Ent();
 		Ent.setName(name);
-		Ent.setPassword(name);
-		boolean doesUserExist = Repository.existsByName(name);
-		if (!doesUserExist) {
-			status = DOMeeting.doRegisterEntity(Ent);
+		Ent.setPassword(password);
+
+		ArrayList<String> err = new Validation().validateRegister(Ent);
+		if (err.isEmpty()) {
+			boolean doesUserExist = Repository.existsByName(name);
+			if (!doesUserExist) {
+				status = DOMeeting.doRegisterEntity(Ent);
+			} else {
+				Ent = Repository.findTopByName(Ent.getName());
+			}
 		} else {
-			Ent = Repository.findTopByName(Ent.getName());
+			status = err.toString();
 		}
+
 		return status;
 	}
-	
-	@GetMapping(path="/byNameAPI" )
+
+	@GetMapping(path = "/byNameAPI")
 	@ResponseBody
 	public List byNameAPI(@RequestParam(required = true, value = "name") String name) {
 		List list = new ArrayList<>();
@@ -280,8 +282,8 @@ public class MyController {
 		}
 		return list;
 	}
-	
-	@PostMapping(path="/bookMeetingAPI" , produces = {"application/json"})
+
+	@PostMapping(path = "/bookMeetingAPI", produces = { "application/json" })
 	@ResponseBody
 	public String bookMeetingAPI(@RequestBody(required = true) Ent Ent) {
 		String status = "Already Present";
@@ -298,5 +300,5 @@ public class MyController {
 		}
 		return status;
 	}
-	
+
 }

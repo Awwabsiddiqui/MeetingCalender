@@ -28,6 +28,7 @@
 		<property name="hbm2ddl.auto">update</property>
 
 		<mapping class="com.example.springrest.entity.Ent" />
+		<mapping class="com.example.springrest.entity.SubEnt" />
 
 	</session-factory>
 </hibernate-configuration>

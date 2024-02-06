@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringrestApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringrestApplication.class, args);//check git alive stat
+		SpringApplication.run(SpringrestApplication.class, args);
 	}
 
 }

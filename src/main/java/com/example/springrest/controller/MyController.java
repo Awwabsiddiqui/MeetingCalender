@@ -210,6 +210,17 @@ public class MyController {
 		modelAndView.addObject("Ent", Ent);
 		return modelAndView;
 	}
+	
+	@RequestMapping(value = "/listAllUser")
+	public ModelAndView allStuddent() {
+		ModelAndView modelAndView = new ModelAndView();
+			List<Ent> list = Repository.findAll();
+			//List list = new DOMeeting().getEnts();
+			modelAndView.addObject("list", list);
+			modelAndView.addObject("status", "found");
+			modelAndView.setViewName("listAllUser");
+		return modelAndView;
+	}
 
 	@RequestMapping("/bookMeetingUI")
 	public ModelAndView bookMeeting() {

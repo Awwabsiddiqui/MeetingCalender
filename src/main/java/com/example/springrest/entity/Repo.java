@@ -11,7 +11,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface Repo extends JpaRepository<Ent, Integer>, CrudRepository<Ent, Integer> {
 	public List<Ent> findByName(String name);
 
-	public Ent findTopByName(String name);
+	public Ent findTopByNameAndPassword(String name , String password);
 
 	public boolean existsById(long Id);
 

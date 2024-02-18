@@ -15,7 +15,8 @@
 <body>
 	<div class="center">
 		<h4 style="color: orangered;"	th:text="${status}"></h4>
-	<form action="listUser" method="post">
+	<!--<form action="listUser" method="post">-->
+			<form action="#" th:action="@{/listUser}" th:object="${Ent}" method="post" >
 		<table>
 			<tr>
 				<td><label for="user-name">User Name</label></td>

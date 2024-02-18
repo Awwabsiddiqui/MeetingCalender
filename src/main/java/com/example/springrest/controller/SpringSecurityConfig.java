@@ -17,16 +17,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //		return new BCryptPasswordEncoder();
 //	}
 
-    @Bean
-    DaoAuthenticationProvider authenticationProvider() {
-    	DaoAuthenticationProvider DaoAP = new DaoAuthenticationProvider();
-    	DaoAP.setUserDetailsPasswordService(null);
-			return DaoAP;
-			
-		}
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests();
-	}
+//    @Bean
+//    DaoAuthenticationProvider authenticationProvider() {
+//    	DaoAuthenticationProvider DaoAP = new DaoAuthenticationProvider();
+//    	DaoAP.setUserDetailsPasswordService(null);
+//			return DaoAP;
+//			
+//		}
+//	
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
+//		http.authorizeRequests();
+//	}
 }

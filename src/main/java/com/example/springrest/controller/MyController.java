@@ -2,6 +2,7 @@ package com.example.springrest.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -174,16 +175,6 @@ public class MyController {
 	public ModelAndView output(@ModelAttribute Ent Ent) {
 		// Repository.save(Ent);
 		String status = "Already Present";
-		ArrayList<SubEnt> subent = new ArrayList<SubEnt>();
-		
-		SubEnt se1 = new SubEnt();
-		se1.setSubChildColumn("see1");
-		SubEnt se2 = new SubEnt();
-		se2.setSubChildColumn("see2");
-		
-		subent.add(se1);
-		subent.add(se2);
-		Ent.setSubEnts(subent);
 		boolean doesUserExist = Repository.existsByName(Ent.getName());
 		if (!doesUserExist) {
 			// status = meetingMethod.registerHibernateEntity(Ent);
@@ -256,6 +247,16 @@ public class MyController {
 		} else if (!checkPassword.getPassword().equals(Ent.getPassword())) {
 			status = "Invalid Password";
 		} else {
+			
+			ArrayList<SubEnt> subent = new ArrayList<SubEnt>();
+			
+			SubEnt se1 = new SubEnt();
+			se1.setMeetingDate(Ent.getMeetingDate());
+			se1.setMeetingEndDate(Ent.getMeetingEndDate());
+			se1.setMeetingWith(Ent.getMeetingWith());
+			
+			subent.add(se1);
+			Ent.setSubEnts(subent);
 			status = DOMeeting.bookMeeting(Ent);
 		}
 		ModelAndView modelAndView = new ModelAndView();

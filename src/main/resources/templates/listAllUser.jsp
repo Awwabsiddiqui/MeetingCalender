@@ -12,7 +12,7 @@
 
 <head>
 	<meta charset="ISO-8859-1" />
-	<title>List</title>
+	<title>List All</title>
 </head>
 
 <body>

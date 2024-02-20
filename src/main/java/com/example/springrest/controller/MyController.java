@@ -2,6 +2,7 @@ package com.example.springrest.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.springrest.entity.Ent;
 import com.example.springrest.entity.Repo;
+import com.example.springrest.entity.SubEnt;
 import com.example.springrest.method.DOMeeting;
 import com.example.springrest.method.Validation;
 import com.example.springrest.method.meetingMethod;
@@ -178,7 +180,7 @@ public class MyController {
 			// status = meetingMethod.registerHibernateEntity(Ent);
 			status = DOMeeting.doRegisterEntity(Ent);
 		} else {
-			Ent = Repository.findTopByName(Ent.getName());
+			Ent = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
 		}
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("output");
@@ -195,7 +197,10 @@ public class MyController {
 	@RequestMapping(value = "/listUser")
 	public ModelAndView singleStuddent(@ModelAttribute Ent Ent) {
 		ModelAndView modelAndView = new ModelAndView();
-		Ent checkPassword = Repository.findTopByName(Ent.getName());
+		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
+		
+		System.out.println("subEnts : "+checkPassword.getSubEnts());
+		
 		if (checkPassword.getPassword().equals(Ent.getPassword())) {
 			List<Ent> x = Repository.findByName(Ent.getName());
 			List list = new DOMeeting().findEntByName(Ent.getName());
@@ -233,7 +238,7 @@ public class MyController {
 	@RequestMapping(value = "/saveBookMeeting")
 	public ModelAndView saveBookMeeting(@ModelAttribute Ent Ent) {
 		String status = "Already Present";
-		Ent checkPassword = Repository.findTopByName(Ent.getName());
+		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
 		boolean doesMeetingWithExist = Repository.existsByName(Ent.getMeetingWith());
 		if (checkPassword == null || checkPassword.equals(new Ent())) {
 			status = "Please Register at http://localhost:8080/input";
@@ -242,6 +247,16 @@ public class MyController {
 		} else if (!checkPassword.getPassword().equals(Ent.getPassword())) {
 			status = "Invalid Password";
 		} else {
+			
+			ArrayList<SubEnt> subent = new ArrayList<SubEnt>();
+			
+			SubEnt se1 = new SubEnt();
+			se1.setMeetingDate(Ent.getMeetingDate());
+			se1.setMeetingEndDate(Ent.getMeetingEndDate());
+			se1.setMeetingWith(Ent.getMeetingWith());
+			
+			subent.add(se1);
+			Ent.setSubEnts(subent);
 			status = DOMeeting.bookMeeting(Ent);
 		}
 		ModelAndView modelAndView = new ModelAndView();
@@ -274,7 +289,7 @@ public class MyController {
 			if (!doesUserExist) {
 				status = DOMeeting.doRegisterEntity(Ent);
 			} else {
-				Ent = Repository.findTopByName(Ent.getName());
+				Ent = Repository.findTopByNameAndPassword(Ent.getName(),Ent.getPassword());
 			}
 		} else {
 			status = err.toString();
@@ -287,7 +302,7 @@ public class MyController {
 	@ResponseBody
 	public List byNameAPI(@RequestParam(required = true, value = "name") String name) {
 		List list = new ArrayList<>();
-		Ent checkPassword = Repository.findTopByName(name);
+		Ent checkPassword = Repository.findTopByNameAndPassword(name , name);
 		if (checkPassword.getPassword().equals(name)) {
 			list = new DOMeeting().findEntByName(name);
 		}
@@ -298,7 +313,7 @@ public class MyController {
 	@ResponseBody
 	public String bookMeetingAPI(@RequestBody(required = true) Ent Ent) {
 		String status = "Already Present";
-		Ent checkPassword = Repository.findTopByName(Ent.getName());
+		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
 		boolean doesMeetingWithExist = Repository.existsByName(Ent.getMeetingWith());
 		if (checkPassword == null || checkPassword.equals(new Ent())) {
 			status = "http://localhost:8080/registerAPI?name=";

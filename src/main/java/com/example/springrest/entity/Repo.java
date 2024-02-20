@@ -6,18 +6,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 public interface Repo extends JpaRepository<Ent, Integer>, CrudRepository<Ent, Integer> {
 	public List<Ent> findByName(String name);
 
-	public Ent findTopByName(String name);
+	public Ent findTopByNameAndPassword(String name, String password);
 
 	public boolean existsById(long Id);
 
 	public boolean existsByName(String name);
-	
-	public boolean existsByNameAndPassword(String name , String password);
+
+	public boolean existsByNameAndPassword(String name, String password);
 
 	public boolean existsByMeetingDate(LocalDateTime meetingDate);
 

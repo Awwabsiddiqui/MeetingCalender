@@ -5,4 +5,3 @@ TASKS
 3: Parent child Linking
 4: List gorupBy clause
 5: AJAX
-6: JSP conversion

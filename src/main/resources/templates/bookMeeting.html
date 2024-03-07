@@ -20,12 +20,11 @@
 			<br>
 			Password : <input type="password" th:field="*{password}">
 			<br>
-			Meeting With : <input type="text" th:field="*{meetingWith}">
+			Meeting With <input type="text" id="subEntName" th:field="*{subEnts[0].meetingWith}">
 			<br>
-			StartDate : <input type="datetime-local" th:field="*{meetingDate}">
+			StartDate : <input type="datetime-local" th:field="*{subEnts[0].meetingDate}">
 			<br>
-			EndDate : <input type="datetime-local" th:field="*{meetingEndDate}">
-			<!--Time : <input type="time" th:field="*{meetingTime}">	-->
+			EndDate : <input type="datetime-local" th:field="*{subEnts[0].meetingEndDate}">
 			<br><br>
 			<button style="margin-left: 10%;" type="submit">SAVE</button>
 		</form>

@@ -16,7 +16,7 @@
 	<table>
 		<tr>
 			<td>
-				<h4 th:text="${Ent.name}"></h4> with <h4 th:text="${Ent.meetingWith}"></h4>
+				<h4 th:text="${Ent.name}"></h4> with <h4 th:text="${Ent.subEnts[0].meetingWith}"></h4>
 			</td>
 		</tr>
 		
@@ -25,7 +25,7 @@
 				<h4>Meeting Start time</h4>
 			</td>
 			<td>
-				<h4 th:text="${#dates.format(Ent.meetingDate	, 'dd-MMM-yyyy hh:mm')}"></h4>
+				<h4 th:text="${#dates.format(Ent.subEnts[0].meetingDate	, 'dd-MMM-yyyy hh:mm')}"></h4>
 			</td>
 		</tr>
 		
@@ -34,7 +34,7 @@
 				<h4>Meeting End time</h4>
 			</td>
 			<td>
-				<h4 th:text="${#dates.format(Ent.meetingEndDate	, 'dd-MMM-yyyy hh:mm')}"></h4>
+				<h4 th:text="${#dates.format(Ent.subEnts[0].meetingEndDate	, 'dd-MMM-yyyy hh:mm')}"></h4>
 			</td>
 		</tr>
 		

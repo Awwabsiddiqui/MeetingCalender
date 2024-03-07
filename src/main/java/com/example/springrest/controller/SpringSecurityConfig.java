@@ -9,7 +9,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-//	@Bean
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+        http.httpBasic(basic -> basic.disable());
+		///http.authorizeRequests();
+	}
+	
+	//	@Bean
 //	public BCryptPasswordEncoder passwordEncoder() {
 //		return new BCryptPasswordEncoder();
 //	}
@@ -21,10 +28,4 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //			return DaoAP;
 //			
 //		}
-//	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic(basic -> basic.disable());
-		///http.authorizeRequests();
-	}
 }

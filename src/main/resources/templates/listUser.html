@@ -36,12 +36,12 @@
 					Meeting End Date
 				</th>
 			</tr>
-			<tr th:each="ent : ${list}">
-				<div th:if="${ent.meetingWith!=null}">
-					<td th:text="${ent.name}"> </td>
-					<td th:text="${ent.meetingWith}"> </td>
-					<td th:text="${#dates.format(ent.meetingDate	, 'dd-MMM-yyyy hh:mm')}"></td>
-					<td th:text="${#dates.format(ent.meetingEndDate	, 'dd-MMM-yyyy hh:mm')}"></td>
+			<tr th:each="subEnt : ${list}">
+				<div th:if="${subEnt.meetingWith!=null}">
+					<td th:text="${Ent.name}"> </td>
+					<td th:text="${subEnt.meetingWith}"> </td>
+					<td th:text="${#dates.format(subEnt.meetingDate	, 'dd-MMM-yyyy hh:mm')}"></td>
+					<td th:text="${#dates.format(subEnt.meetingEndDate	, 'dd-MMM-yyyy hh:mm')}"></td>
 				</div>
 			</tr>
 		</table>

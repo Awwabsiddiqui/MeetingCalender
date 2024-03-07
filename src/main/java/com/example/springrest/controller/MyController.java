@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.springrest.entity.Ent;
-import com.example.springrest.entity.Repo;
+import com.example.springrest.entity.RepoEnt;
 import com.example.springrest.entity.SubEnt;
 import com.example.springrest.method.DOMeeting;
 import com.example.springrest.method.Validation;
@@ -25,7 +25,7 @@ import com.example.springrest.method.meetingMethod;
 @Controller
 public class MyController {
 	@Autowired
-	private Repo Repository;
+	private RepoEnt Repository;
 
 	@Autowired
 	DOMeeting DOMeeting;
@@ -53,7 +53,6 @@ public class MyController {
 	public String registerJPA(@RequestParam(required = true, value = "name") String name) throws Exception {
 		Ent entity = new Ent();
 		entity.setName(name);
-		entity.setMeeting("");
 		Repository.save(entity);
 		return "registered";
 	}
@@ -107,40 +106,40 @@ public class MyController {
 		if (from.contentEquals(to))
 			return "meeting with self not allowed";
 
-		String meetingTime = Date + "|" + Time;
+//		String meetingTime = Date + "|" + Time;
 
-		List<Ent> metaDataFrom = Repository.findByName(from);
-		String meetingValFrom = metaDataFrom.get(0).getMeeting();
-		long meetingIdFrom = metaDataFrom.get(0).getId();
-		String[] meetingArrFrom = meetingValFrom.split("\\,");
+//		List<Ent> metaDataFrom = Repository.findByName(from);
+//		String meetingValFrom = metaDataFrom.get(0).getMeeting();
+//		long meetingIdFrom = metaDataFrom.get(0).getId();
+//		String[] meetingArrFrom = meetingValFrom.split("\\,");
+//
+//		List<Ent> metaDataTo = Repository.findByName(to);
+//		String meetingValTo = metaDataTo.get(0).getMeeting();
+//		long meetingIdTo = metaDataTo.get(0).getId();
+//		String[] meetingArrTo = meetingValTo.split("\\,");
 
-		List<Ent> metaDataTo = Repository.findByName(to);
-		String meetingValTo = metaDataTo.get(0).getMeeting();
-		long meetingIdTo = metaDataTo.get(0).getId();
-		String[] meetingArrTo = meetingValTo.split("\\,");
-
-		if (meetingArrFrom == null) {
-			return "User does not exist , Please register : http://localhost:8080/registerJPA?name=";
-		} else if (meetingArrTo == null) {
-			return "User does not exist";
-		} else {
-
-			for (int i = 0; i < meetingArrTo.length; i++) {
-				if (meetingArrTo[i].contains(meetingTime)) {
-					return to + " has a meeting already booked with : " + meetingArrTo[i].split("@")[0];
-				}
-			}
-			for (int i = 0; i < meetingArrFrom.length; i++) {
-				if (meetingArrFrom[i].contains(meetingTime)) {
-					return "you have a meeting already booked with : " + meetingArrFrom[i].split("@")[0];
-				}
-			}
-			boolean check1 = saver(meetingIdTo, to, meetingValTo, from + "@" + meetingTime + ",");
-			boolean check2 = saver(meetingIdFrom, from, meetingValFrom, to + "@" + meetingTime + ",");
-
-			if (check1 && check2)
-				return "meeting booked successfully";
-		}
+//		if (meetingArrFrom == null) {
+//			return "User does not exist , Please register : http://localhost:8080/registerJPA?name=";
+//		} else if (meetingArrTo == null) {
+//			return "User does not exist";
+//		} else {
+//
+//			for (int i = 0; i < meetingArrTo.length; i++) {
+//				if (meetingArrTo[i].contains(meetingTime)) {
+//					return to + " has a meeting already booked with : " + meetingArrTo[i].split("@")[0];
+//				}
+//			}
+//			for (int i = 0; i < meetingArrFrom.length; i++) {
+//				if (meetingArrFrom[i].contains(meetingTime)) {
+//					return "you have a meeting already booked with : " + meetingArrFrom[i].split("@")[0];
+//				}
+//			}
+//			boolean check1 = saver(meetingIdTo, to, meetingValTo, from + "@" + meetingTime + ",");
+//			boolean check2 = saver(meetingIdFrom, from, meetingValFrom, to + "@" + meetingTime + ",");
+//
+//			if (check1 && check2)
+//				return "meeting booked successfully";
+//		}
 
 		return "someError";
 	}
@@ -149,7 +148,7 @@ public class MyController {
 		Ent entity = new Ent();
 		entity.setId(id);
 		entity.setName(name);
-		entity.setMeeting(meetingData + meetingTime);
+//		entity.setMeeting(meetingData + meetingTime);
 		Repository.save(entity);
 
 		return true;
@@ -178,7 +177,9 @@ public class MyController {
 		boolean doesUserExist = Repository.existsByName(Ent.getName());
 		if (!doesUserExist) {
 			// status = meetingMethod.registerHibernateEntity(Ent);
-			status = DOMeeting.doRegisterEntity(Ent);
+//			status = DOMeeting.doRegisterEntity(Ent);
+			Repository.save(Ent);
+			status = "Created Successfully";
 		} else {
 			Ent = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
 		}
@@ -199,12 +200,8 @@ public class MyController {
 		ModelAndView modelAndView = new ModelAndView();
 		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
 		
-		System.out.println("subEnts : "+checkPassword.getSubEnts());
-		
 		if (checkPassword.getPassword().equals(Ent.getPassword())) {
-			List<Ent> x = Repository.findByName(Ent.getName());
-			List list = new DOMeeting().findEntByName(Ent.getName());
-			modelAndView.addObject("list", list);
+			modelAndView.addObject("list", checkPassword.getSubEnts());
 			modelAndView.addObject("status", "found");
 			modelAndView.setViewName("listUser");
 		} else {
@@ -239,30 +236,49 @@ public class MyController {
 	public ModelAndView saveBookMeeting(@ModelAttribute Ent Ent) {
 		String status = "Already Present";
 		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
-		boolean doesMeetingWithExist = Repository.existsByName(Ent.getMeetingWith());
+		Ent meetingWithEnt = Repository.findTopByName(Ent.getSubEnts().get(0).getMeetingWith()).orElse(null);
+		
 		if (checkPassword == null || checkPassword.equals(new Ent())) {
 			status = "Please Register at http://localhost:8080/input";
-		} else if (!doesMeetingWithExist) {
+		} else if (meetingWithEnt==null) {
 			status = "MeetingWith entity does not exist";
 		} else if (!checkPassword.getPassword().equals(Ent.getPassword())) {
 			status = "Invalid Password";
 		} else {
+
+//			System.out.println("Ent : "+Ent);
+//			meetingWithEnt.setSubEnts(Ent.getSubEnts());
+//			meetingWithEnt.getSubEnts().get(0).setMeetingWith(Ent.getName());
+//			System.out.println("meetingWithEnt : "+meetingWithEnt);
 			
-			ArrayList<SubEnt> subent = new ArrayList<SubEnt>();
+			SubEnt main = new SubEnt();
+			main.setEnt(checkPassword);
+			main.setMeetingDate(Ent.getSubEnts().get(0).getMeetingDate());
+			main.setMeetingEndDate(Ent.getSubEnts().get(0).getMeetingEndDate());
+			main.setMeetingWith(meetingWithEnt.getName());
+			main.setMeetingWithId(meetingWithEnt.getId());
 			
-			SubEnt se1 = new SubEnt();
-			se1.setMeetingDate(Ent.getMeetingDate());
-			se1.setMeetingEndDate(Ent.getMeetingEndDate());
-			se1.setMeetingWith(Ent.getMeetingWith());
+			SubEnt meetingWith = new SubEnt();
+			meetingWith.setEnt(meetingWithEnt);
+			meetingWith.setMeetingDate(Ent.getSubEnts().get(0).getMeetingDate());
+			meetingWith.setMeetingEndDate(Ent.getSubEnts().get(0).getMeetingEndDate());
+			meetingWith.setMeetingWith(checkPassword.getName());
+			meetingWith.setMeetingWithId(checkPassword.getId());
 			
-			subent.add(se1);
-			Ent.setSubEnts(subent);
-			status = DOMeeting.bookMeeting(Ent);
+			System.out.println("main : "+main);
+			System.out.println("");
+			System.out.println("meetingWith : "+meetingWith);
+			System.out.println("");
+//			status = DOMeeting.bookMeeting(Ent , meetingWithEnt);
+			status = DOMeeting.bookMeetingSubEnt(main , meetingWith);
+
+			
 		}
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("saveBookMeeting");
 		modelAndView.addObject("Status", status);
 		modelAndView.addObject("Ent", Ent);
+		modelAndView.addObject("meetingWith",meetingWithEnt.getName());
 		return modelAndView;
 	}
 
@@ -314,15 +330,15 @@ public class MyController {
 	public String bookMeetingAPI(@RequestBody(required = true) Ent Ent) {
 		String status = "Already Present";
 		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
-		boolean doesMeetingWithExist = Repository.existsByName(Ent.getMeetingWith());
+		Ent meetingWithEnt = Repository.findTopByName(Ent.getSubEnts().get(0).getMeetingWith()).orElse(null);
 		if (checkPassword == null || checkPassword.equals(new Ent())) {
 			status = "http://localhost:8080/registerAPI?name=";
-		} else if (!doesMeetingWithExist) {
+		} else if (meetingWithEnt==null) {
 			status = "MeetingWith entity does not exist";
 		} else if (!checkPassword.getPassword().equals(Ent.getPassword())) {
 			status = "Invalid Password";
 		} else {
-			status = DOMeeting.bookMeeting(Ent);
+			status = DOMeeting.bookMeeting(Ent , meetingWithEnt);
 		}
 		return status;
 	}

@@ -25,15 +25,18 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "meetingcalenderhibernatedChild")
+@Table(name = "meetingcalenderhibernatedSubEnt")
 public class SubEnt {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public long subId;
 
 	@Column(name = "meeting_with")
 	private String meetingWith;
+	
+	@Column(name = "meeting_with_id")
+	private long meetingWithId;
 	
 	@Column(name = "meeting_date", /* nullable = false, */ columnDefinition = "DATE DEFAULT '1900-01-01 00:00'")
 	// @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -47,5 +50,13 @@ public class SubEnt {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	Date meetingEndDate;
 
+//	@ManyToOne
+//	@JoinColumn(name="sefk")
+//	private Ent ent;
+	
+	
+    @ManyToOne
+    @ToString.Exclude
+    public Ent ent;
 	
 }

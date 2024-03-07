@@ -13,13 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.springrest.entity.Ent;
-import com.example.springrest.entity.Repo;
+import com.example.springrest.entity.RepoEnt;
+import com.example.springrest.entity.RepoSubEnt;
+import com.example.springrest.entity.SubEnt;
 
 @Component
 public class DOMeeting {
 
 	@Autowired
-	private Repo Repository;
+	private RepoEnt Repository;
+	
+	@Autowired
+	private RepoSubEnt RepositorySubent;
 
 	public void doRegister(String name) {
 		Session session = HibernateUtil.getSession();
@@ -85,7 +90,7 @@ public class DOMeeting {
 		Query query = session.createQuery(hql);
 		query.setLong("id", b.getId());
 		query.setString("title", b.getName());
-		query.setString("meeting", b.getMeeting());
+//		query.setString("meeting", b.getSubEnts().get(0).getMeeting());
 		int rowCount = query.executeUpdate();
 
 		System.out.println("Rows affected: " + rowCount);
@@ -163,36 +168,67 @@ public class DOMeeting {
 		Criteria criteria = session.createCriteria(Ent.class);
 		List results = criteria.add(Restrictions.eq("name", name)).list();
 		session.close();
-
 		return results;
 	}
 
-	public String bookMeeting(Ent ent) {
+	public String bookMeeting(Ent ent , Ent meetingWithEnt) {
 		String status = "";
-		Date today = new Date();
-		boolean validateMeetingTime = ent.getMeetingDate().after(today) && ent.getMeetingEndDate().after(today) && ent.getMeetingDate().before(ent.getMeetingEndDate());
-		if(validateMeetingTime) {
-			Ent meetingAlreadyWith = Repository.findTopByNameAndMeetingDateLessThanEqualAndMeetingEndDateGreaterThanEqual(ent.getName(), ent.getMeetingDate(), ent.getMeetingDate()).orElse(new Ent());
-			if (meetingAlreadyWith != null && meetingAlreadyWith.getMeetingWith() != null && !meetingAlreadyWith.getMeetingWith().equals("")) {
-				status = "Meeting already booked with : " + meetingAlreadyWith.getMeetingWith();
-			} else {
-				Repository.save(ent);
+		try {
+			Date today = new Date();
+			boolean validateMeetingTime = ent.subEnts.get(0).getMeetingDate().after(today) && ent.subEnts.get(0).getMeetingEndDate().after(today) && ent.subEnts.get(0).getMeetingDate().before(ent.subEnts.get(0).getMeetingEndDate());
+			if(validateMeetingTime) {
+				Ent meetingAlreadyWith = Repository.findTopByNameAndSubEntsMeetingDateLessThanEqualAndSubEntsMeetingEndDateGreaterThanEqual(ent.getName(), ent.subEnts.get(0).getMeetingDate(), ent.subEnts.get(0).getMeetingDate()).orElse(new Ent());
+				
+				if (meetingAlreadyWith != null && meetingAlreadyWith.subEnts!=null && meetingAlreadyWith.subEnts.get(0)!=null && meetingAlreadyWith.subEnts.get(0).getMeetingWith() != null && !meetingAlreadyWith.subEnts.get(0).getMeetingWith().equals("")) {
+					status = "Meeting already booked with : " + meetingAlreadyWith.subEnts.get(0).getMeetingWith();
+				} else {
+					
+					
+//					SubEnt mainMeeting = ent.getSubEnts().get(0);
+//					mainMeeting.setEnt(ent);
+//					
+//					SubEnt mainMeetingWithEnt = meetingWithEnt.getSubEnts().get(0);
+//					mainMeetingWithEnt.setEnt(meetingWithEnt);
+					
+					
+					status = "Meeting Booked";
+					Repository.save(ent);
+					Repository.save(meetingWithEnt);
 
-				Ent meetingWithEnt = new Ent();
-				meetingWithEnt.setName(ent.getMeetingWith());
-				meetingWithEnt.setMeetingWith(ent.getName());
-				meetingWithEnt.setMeetingDate(ent.getMeetingDate());
-				meetingWithEnt.setMeetingEndDate(ent.getMeetingEndDate());
-
-				Repository.save(meetingWithEnt);
-
-				status = "Meeting Booked";
+					status = "Meeting Booked";
+				}
+			}else {
+				status = "Invalid Time Entered";
 			}
-		}else {
-			status = "Invalid Time Entered";
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return status;
 	}
+	public String bookMeetingSubEnt(SubEnt ent , SubEnt meetingWithEnt) {
+		String status = "";
+		try {
+			Date today = new Date();
+			boolean validateMeetingTime = ent.getMeetingDate().after(today) && ent.getMeetingEndDate().after(today) && ent.getMeetingDate().before(ent.getMeetingEndDate());
+			if(validateMeetingTime) {
+				Ent meetingAlreadyWith = Repository.findTopByNameAndSubEntsMeetingDateLessThanEqualAndSubEntsMeetingEndDateGreaterThanEqual(ent.getEnt().getName(), ent.getMeetingDate(), ent.getMeetingDate()).orElse(new Ent());
+				
+				if (meetingAlreadyWith != null && meetingAlreadyWith.subEnts!=null && meetingAlreadyWith.subEnts.get(0)!=null && meetingAlreadyWith.subEnts.get(0).getMeetingWith() != null && !meetingAlreadyWith.subEnts.get(0).getMeetingWith().equals("")) {
+					status = "Meeting already booked with : " + meetingAlreadyWith.subEnts.get(0).getMeetingWith();
+				} else {
+					status = "Meeting Booked";
+					RepositorySubent.save(ent);
+					RepositorySubent.save(meetingWithEnt);
+					status = "Meeting Booked";
+				}
+			}else {
+				status = "Invalid Time Entered";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
+		return status;
+	}
 }

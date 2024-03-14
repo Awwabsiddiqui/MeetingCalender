@@ -1,10 +1,12 @@
 package com.example.springrest.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -191,8 +193,17 @@ public class MyController {
 	}
 
 	@RequestMapping("/search")
-	public String search() {
-		return "search";
+	public ModelAndView search(Principal principal) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("search");
+		Ent ent = new Ent();
+		MyUserDetails userDetails =  (MyUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		System.out.println("userDetails ::: "+userDetails);
+		System.out.println("principal.getName ::: "+principal.getName());//this can also be used
+		ent.setName(userDetails.getUsername());
+		ent.setPassword(userDetails.getPassword());
+		modelAndView.addObject("Ent", ent);
+		return modelAndView;
 	}
 
 	@RequestMapping(value = "/listUser")
@@ -200,7 +211,7 @@ public class MyController {
 		ModelAndView modelAndView = new ModelAndView();
 		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
 		
-		if (checkPassword.getPassword().equals(Ent.getPassword())) {
+		if (checkPassword!=null && checkPassword.getPassword().equals(Ent.getPassword())) {
 			modelAndView.addObject("list", checkPassword.getSubEnts());
 			modelAndView.addObject("status", "found");
 			modelAndView.setViewName("listUser");

@@ -31,6 +31,7 @@ public class Ent {
 
 	private String name;
 	private String password;
+	private String authority;
 
 //	@Column(name = "meeting_with")
 //	private String meetingWith;

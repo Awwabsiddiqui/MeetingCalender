@@ -2,8 +2,12 @@ package com.example.springrest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import com.example.springrest.entity.RepoEnt;
 
 @SpringBootApplication
+@EnableJpaRepositories(basePackageClasses = RepoEnt.class)
 public class SpringrestApplication {
 
 	public static void main(String[] args) {

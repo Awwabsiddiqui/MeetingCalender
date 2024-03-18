@@ -3,11 +3,13 @@ package com.example.springrest.controller;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -172,6 +174,7 @@ public class MyController {
 		return modelAndView;
 	}
 
+	@Transactional
 	@RequestMapping(value = "/output")
 	public ModelAndView output(@ModelAttribute Ent Ent) {
 		// Repository.save(Ent);
@@ -243,8 +246,9 @@ public class MyController {
 		return modelAndView;
 	}
 
+	@Transactional
 	@RequestMapping(value = "/saveBookMeeting")
-	public ModelAndView saveBookMeeting(@ModelAttribute Ent Ent) {
+	public ModelAndView saveBookMeeting(@ModelAttribute Ent Ent) throws Exception {
 		String status = "Already Present";
 		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
 		Ent meetingWithEnt = Repository.findTopByName(Ent.getSubEnts().get(0).getMeetingWith()).orElse(null);
@@ -257,33 +261,37 @@ public class MyController {
 			status = "Invalid Password";
 		} else {
 
-//			System.out.println("Ent : "+Ent);
-//			meetingWithEnt.setSubEnts(Ent.getSubEnts());
-//			meetingWithEnt.getSubEnts().get(0).setMeetingWith(Ent.getName());
-//			System.out.println("meetingWithEnt : "+meetingWithEnt);
 			
-			SubEnt main = new SubEnt();
-			main.setEnt(checkPassword);
-			main.setMeetingDate(Ent.getSubEnts().get(0).getMeetingDate());
-			main.setMeetingEndDate(Ent.getSubEnts().get(0).getMeetingEndDate());
-			main.setMeetingWith(meetingWithEnt.getName());
-			main.setMeetingWithId(meetingWithEnt.getId());
-			
-			SubEnt meetingWith = new SubEnt();
-			meetingWith.setEnt(meetingWithEnt);
-			meetingWith.setMeetingDate(Ent.getSubEnts().get(0).getMeetingDate());
-			meetingWith.setMeetingEndDate(Ent.getSubEnts().get(0).getMeetingEndDate());
-			meetingWith.setMeetingWith(checkPassword.getName());
-			meetingWith.setMeetingWithId(checkPassword.getId());
-			
-			System.out.println("main : "+main);
-			System.out.println("");
-			System.out.println("meetingWith : "+meetingWith);
-			System.out.println("");
-//			status = DOMeeting.bookMeeting(Ent , meetingWithEnt);
-			status = DOMeeting.bookMeetingSubEnt(main , meetingWith);
+			try {
+				SubEnt main = new SubEnt();
+				main.setEnt(checkPassword);
+				main.setMeetingDate(Ent.getSubEnts().get(0).getMeetingDate());
+				main.setMeetingEndDate(Ent.getSubEnts().get(0).getMeetingEndDate());
+				main.setMeetingWith(meetingWithEnt.getName());
+				main.setMeetingWithId(meetingWithEnt.getId());
+				
+				SubEnt meetingWith = new SubEnt();
+				meetingWith.setEnt(meetingWithEnt);
+				meetingWith.setMeetingDate(Ent.getSubEnts().get(0).getMeetingDate());
+				meetingWith.setMeetingEndDate(Ent.getSubEnts().get(0).getMeetingEndDate());
+				meetingWith.setMeetingWith(checkPassword.getName());
+				meetingWith.setMeetingWithId(checkPassword.getId());
+				
+				System.out.println("main : "+main);
+				System.out.println("");
+				System.out.println("meetingWith : "+meetingWith);
+				System.out.println("");
+				System.out.println(TransactionSynchronizationManager.isActualTransactionActive());
 
-			
+//			status = DOMeeting.bookMeeting(Ent , meetingWithEnt);
+				status = DOMeeting.bookMeetingSubEnt(main , meetingWith);
+			} catch (Exception e) {
+				e.printStackTrace();
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			}
+				if(!status.equalsIgnoreCase("Meeting Booked"))
+					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
 		}
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("saveBookMeeting");

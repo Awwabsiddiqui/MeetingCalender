@@ -11,6 +11,9 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.example.springrest.entity.Ent;
 import com.example.springrest.entity.RepoEnt;
@@ -217,7 +220,7 @@ public class DOMeeting {
 				if (meetingAlreadyWith != null && meetingAlreadyWith.subEnts!=null && meetingAlreadyWith.subEnts.get(0)!=null && meetingAlreadyWith.subEnts.get(0).getMeetingWith() != null && !meetingAlreadyWith.subEnts.get(0).getMeetingWith().equals("")) {
 					status = "Meeting already booked with : " + meetingAlreadyWith.subEnts.get(0).getMeetingWith();
 				} else {
-					status = "Meeting Booked";
+					System.out.println(TransactionSynchronizationManager.isActualTransactionActive());
 					RepositorySubent.save(ent);
 					RepositorySubent.save(meetingWithEnt);
 					status = "Meeting Booked";
@@ -227,6 +230,7 @@ public class DOMeeting {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			status=e.getLocalizedMessage();
 		}
 
 		return status;

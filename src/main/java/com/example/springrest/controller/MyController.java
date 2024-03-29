@@ -364,6 +364,14 @@ public class MyController {
 		}
 		return status;
 	}
+	
+	 @GetMapping("/listJSP")
+	    public String listJSP(Model model) {
+		    List<Ent> list = Repository.findAll();
+	        model.addAttribute("books", list);
+	        return "lister";
+	    }
+	
     @RequestMapping(method = RequestMethod.GET, path = "/welcome")
     public String hello(Model model, @RequestParam(value="name", required=false, defaultValue="World") String name) {
         model.addAttribute("name", name);

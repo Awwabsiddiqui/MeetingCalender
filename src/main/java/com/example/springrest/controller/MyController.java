@@ -365,9 +365,9 @@ public class MyController {
 		return status;
 	}
 	
-	 @GetMapping("/listJSP")
+	 @GetMapping("/listJSP")//the thymeleaf dependency needs to be commented out to run normal jsps
 	    public String listJSP(Model model) {
-		    List<Ent> list = Repository.findAll();
+		    List<Ent> list = Repository.findByName("awwab");
 	        model.addAttribute("books", list);
 	        return "lister";
 	    }

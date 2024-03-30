@@ -35,7 +35,6 @@
 		<a href="#" onclick="javascript:ajaxer();" >AJAX</a>
 	</div>
 	<div class="center">
-
 		<a href="http://localhost:8080/search">Search User</a>
 		<br>
 		<a href="http://localhost:8080/listAllUser">List All Users</a>

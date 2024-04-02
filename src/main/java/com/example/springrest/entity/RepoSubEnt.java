@@ -1,12 +1,6 @@
 package com.example.springrest.entity;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 public interface RepoSubEnt extends JpaRepository<SubEnt, Integer>, CrudRepository<SubEnt, Integer> {

@@ -1,15 +1,9 @@
 package com.example.springrest;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.example.springrest.controller.MyController;
 import com.example.springrest.method.meetingMethod;
 
 @SpringBootTest

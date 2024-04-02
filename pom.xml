@@ -90,7 +90,7 @@
 			<artifactId>jstl</artifactId>
 		</dependency>
 		<!--the thymeleaf dependency needs to be commented out to run normal jsps-->
-				<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
@@ -108,6 +108,35 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.21.0</version>
+				<configuration>
+					<verbose>true</verbose>
+					<rulesets>
+						<ruleset>src/main/resources/ruleset.xml</ruleset>
+					</rulesets>
+					<failurePriority>5</failurePriority>
+					<maxAllowedViolations>3</maxAllowedViolations>
+					<failOnViolation>true</failOnViolation>
+					<renderViolationsByPriority>true</renderViolationsByPriority>
+					<printFailingErrors>true</printFailingErrors>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.3.1</version>
+				<configuration>
+					<consoleOutput>true</consoleOutput>
+					<configLocation>src/main/resources/sun_checks.xml</configLocation>
+					<logViolationCountToConsole>true</logViolationCountToConsole>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<failOnViolation>true</failOnViolation>
+					<maxAllowedViolations>2</maxAllowedViolations>
 				</configuration>
 			</plugin>
 		</plugins>

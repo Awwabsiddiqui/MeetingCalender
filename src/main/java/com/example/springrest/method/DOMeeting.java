@@ -11,8 +11,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.example.springrest.entity.Ent;
@@ -122,7 +120,7 @@ public class DOMeeting {
 		Transaction tx = session.beginTransaction();
 
 		Criteria criteria = session.createCriteria(Ent.class);
-		Ent Ent = (com.example.springrest.entity.Ent) criteria.add(Restrictions.eq("name", name)).uniqueResult();
+		Ent Ent = (Ent) criteria.add(Restrictions.eq("name", name)).uniqueResult();
 		if (Ent != null) {
 			session.update(Ent);
 		}

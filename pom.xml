@@ -89,7 +89,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
-		<!--the thymeleaf dependency needs to be commented out to run normal jsps-->
+		<!--the thymeleaf dependency needs to be commented out to run normal jsps -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -137,6 +137,7 @@
 					<logViolationsToConsole>true</logViolationsToConsole>
 					<failOnViolation>true</failOnViolation>
 					<maxAllowedViolations>2</maxAllowedViolations>
+					<cacheFile>false</cacheFile>
 				</configuration>
 			</plugin>
 		</plugins>

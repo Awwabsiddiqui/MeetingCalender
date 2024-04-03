@@ -31,10 +31,10 @@ import com.example.springrest.method.meetingMethod;
 @Controller
 public class MyController {
 	@Autowired
-	private RepoEnt Repository;
+	private RepoEnt repository;
 
 	@Autowired
-	DOMeeting DOMeeting;
+	private DOMeeting doMeeting;
 
 	@Autowired
 	meetingMethod meetingMethod;
@@ -42,8 +42,9 @@ public class MyController {
 	@GetMapping("/oldAPI")
 	@ResponseBody
 	public String[] homepage() {
-		String[] arr = new String[] { "http://localhost:8080/oldAPI", "http://localhost:8080/register?name=", "http://localhost:8080/registerHibernate?name=",
-				"http://localhost:8080/registerJPA?name=", "http://localhost:8080/bookMeeting?yourName=&meeetingWith=&meetingDate=&meetingTime", "http://localhost:8080/allMeetings",
+		String[] arr = new String[] {"http://localhost:8080/oldAPI", "http://localhost:8080/register?name=",
+				"http://localhost:8080/registerHibernate?name=", "http://localhost:8080/registerJPA?name=",
+				"http://localhost:8080/bookMeeting?yourName=&meeetingWith=&meetingDate=&meetingTime", "http://localhost:8080/allMeetings",
 				"http://localhost:8080/byName?name=", "http://localhost:8080/bookMeetingJPA?yourName=&meeetingWith=&meetingDate=&meetingTime=" };
 		return arr;
 	}
@@ -59,7 +60,7 @@ public class MyController {
 	public String registerJPA(@RequestParam(required = true, value = "name") String name) throws Exception {
 		Ent entity = new Ent();
 		entity.setName(name);
-		Repository.save(entity);
+		repository.save(entity);
 		return "registered";
 	}
 
@@ -77,15 +78,17 @@ public class MyController {
 
 	@GetMapping("/bookMeeting")
 	@ResponseBody
-	public String bookMeeting(@RequestParam(required = true, value = "yourName") String yourName, @RequestParam(required = true, value = "meeetingWith") String meeetingWith,
-			@RequestParam(required = true, value = "meetingDate") String meetingDate, @RequestParam(required = true, value = "meetingTime") String meetingTime) throws Exception {
+	public String bookMeeting(@RequestParam(required = true, value = "yourName") String yourName,
+			@RequestParam(required = true, value = "meeetingWith") String meeetingWith,
+			@RequestParam(required = true, value = "meetingDate") String meetingDate,
+			@RequestParam(required = true, value = "meetingTime") String meetingTime) throws Exception {
 		return meetingMethod.bookMeeting(yourName, meeetingWith, meetingDate, meetingTime);
 	}
 
 	@GetMapping("/allMeetings")
 	@ResponseBody
 	public String allMeetings() {
-		List<Ent> ls = Repository.findAll();
+		List<Ent> ls = repository.findAll();
 		System.out.println("LIST = " + ls);
 		return ls.toString();
 	}
@@ -93,15 +96,17 @@ public class MyController {
 	@GetMapping("/byName")
 	@ResponseBody
 	public String singleStuddent(@RequestParam(required = true, value = "name") String name) {
-		List<Ent> ls = Repository.findByName(name);
+		List<Ent> ls = repository.findByName(name);
 		System.out.println("LIST = " + ls);
 		return ls.toString();
 	}
 
 	@GetMapping("/bookMeetingJPA")
 	@ResponseBody
-	public String bookMeetingJPA(@RequestParam(required = true, value = "yourName") String yourName, @RequestParam(required = true, value = "meeetingWith") String meeetingWith,
-			@RequestParam(required = true, value = "meetingDate") String meetingDate, @RequestParam(required = true, value = "meetingTime") String meetingTime) throws Exception {
+	public String bookMeetingJPA(@RequestParam(required = true, value = "yourName") String yourName,
+			@RequestParam(required = true, value = "meeetingWith") String meeetingWith,
+			@RequestParam(required = true, value = "meetingDate") String meetingDate,
+			@RequestParam(required = true, value = "meetingTime") String meetingTime) throws Exception {
 
 		return bookMeetingJPAService(yourName, meeetingWith, meetingDate, meetingTime);
 
@@ -155,7 +160,7 @@ public class MyController {
 		entity.setId(id);
 		entity.setName(name);
 //		entity.setMeeting(meetingData + meetingTime);
-		Repository.save(entity);
+		repository.save(entity);
 
 		return true;
 	}
@@ -181,14 +186,14 @@ public class MyController {
 	public ModelAndView output(@ModelAttribute Ent Ent) {
 		// Repository.save(Ent);
 		String status = "Already Present";
-		boolean doesUserExist = Repository.existsByName(Ent.getName());
+		boolean doesUserExist = repository.existsByName(Ent.getName());
 		if (!doesUserExist) {
 			// status = meetingMethod.registerHibernateEntity(Ent);
 //			status = DOMeeting.doRegisterEntity(Ent);
-			Repository.save(Ent);
+			repository.save(Ent);
 			status = "Created Successfully";
 		} else {
-			Ent = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
+			Ent = repository.findTopByNameAndPassword(Ent.getName(), Ent.getPassword());
 		}
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("output");
@@ -202,9 +207,9 @@ public class MyController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("search");
 		Ent ent = new Ent();
-		MyUserDetails userDetails =  (MyUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		System.out.println("userDetails ::: "+userDetails);
-		System.out.println("principal.getName ::: "+principal.getName());//this can also be used
+		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		System.out.println("userDetails ::: " + userDetails);
+		System.out.println("principal.getName ::: " + principal.getName());// this can also be used
 		ent.setName(userDetails.getUsername());
 		ent.setPassword(userDetails.getPassword());
 		modelAndView.addObject("Ent", ent);
@@ -214,9 +219,9 @@ public class MyController {
 	@RequestMapping(value = "/listUser")
 	public ModelAndView singleStuddent(@ModelAttribute Ent Ent) {
 		ModelAndView modelAndView = new ModelAndView();
-		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
-		
-		if (checkPassword!=null && checkPassword.getPassword().equals(Ent.getPassword())) {
+		Ent checkPassword = repository.findTopByNameAndPassword(Ent.getName(), Ent.getPassword());
+
+		if (checkPassword != null && checkPassword.getPassword().equals(Ent.getPassword())) {
 			modelAndView.addObject("list", checkPassword.getSubEnts());
 			modelAndView.addObject("status", "found");
 			modelAndView.setViewName("listUser");
@@ -228,15 +233,15 @@ public class MyController {
 		modelAndView.addObject("Ent", Ent);
 		return modelAndView;
 	}
-	
+
 	@RequestMapping(value = "/listAllUser")
 	public ModelAndView allStuddent() {
 		ModelAndView modelAndView = new ModelAndView();
-			List<Ent> list = Repository.findAll();
-			//List list = new DOMeeting().getEnts();
-			modelAndView.addObject("list", list);
-			modelAndView.addObject("status", "found");
-			modelAndView.setViewName("listAllUser");
+		List<Ent> list = repository.findAll();
+		// List list = new DOMeeting().getEnts();
+		modelAndView.addObject("list", list);
+		modelAndView.addObject("status", "found");
+		modelAndView.setViewName("listAllUser");
 		return modelAndView;
 	}
 
@@ -252,18 +257,17 @@ public class MyController {
 	@RequestMapping(value = "/saveBookMeeting")
 	public ModelAndView saveBookMeeting(@ModelAttribute Ent Ent) throws Exception {
 		String status = "Already Present";
-		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
-		Ent meetingWithEnt = Repository.findTopByName(Ent.getSubEnts().get(0).getMeetingWith()).orElse(null);
-		
+		Ent checkPassword = repository.findTopByNameAndPassword(Ent.getName(), Ent.getPassword());
+		Ent meetingWithEnt = repository.findTopByName(Ent.getSubEnts().get(0).getMeetingWith()).orElse(null);
+
 		if (checkPassword == null || checkPassword.equals(new Ent())) {
 			status = "Please Register at http://localhost:8080/input";
-		} else if (meetingWithEnt==null) {
+		} else if (meetingWithEnt == null) {
 			status = "MeetingWith entity does not exist";
 		} else if (!checkPassword.getPassword().equals(Ent.getPassword())) {
 			status = "Invalid Password";
 		} else {
 
-			
 			try {
 				SubEnt main = new SubEnt();
 				main.setEnt(checkPassword);
@@ -271,35 +275,35 @@ public class MyController {
 				main.setMeetingEndDate(Ent.getSubEnts().get(0).getMeetingEndDate());
 				main.setMeetingWith(meetingWithEnt.getName());
 				main.setMeetingWithId(meetingWithEnt.getId());
-				
+
 				SubEnt meetingWith = new SubEnt();
 				meetingWith.setEnt(meetingWithEnt);
 				meetingWith.setMeetingDate(Ent.getSubEnts().get(0).getMeetingDate());
 				meetingWith.setMeetingEndDate(Ent.getSubEnts().get(0).getMeetingEndDate());
 				meetingWith.setMeetingWith(checkPassword.getName());
 				meetingWith.setMeetingWithId(checkPassword.getId());
-				
-				System.out.println("main : "+main);
+
+				System.out.println("main : " + main);
 				System.out.println("");
-				System.out.println("meetingWith : "+meetingWith);
+				System.out.println("meetingWith : " + meetingWith);
 				System.out.println("");
 				System.out.println(TransactionSynchronizationManager.isActualTransactionActive());
 
 //			status = DOMeeting.bookMeeting(Ent , meetingWithEnt);
-				status = DOMeeting.bookMeetingSubEnt(main , meetingWith);
+				status = doMeeting.bookMeetingSubEnt(main, meetingWith);
 			} catch (Exception e) {
 				e.printStackTrace();
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			}
-				if(!status.equalsIgnoreCase("Meeting Booked"))
-					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			if (!status.equalsIgnoreCase("Meeting Booked"))
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
 		}
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("saveBookMeeting");
 		modelAndView.addObject("Status", status);
 		modelAndView.addObject("Ent", Ent);
-		modelAndView.addObject("meetingWith",meetingWithEnt.getName());
+		modelAndView.addObject("meetingWith", meetingWithEnt.getName());
 		return modelAndView;
 	}
 
@@ -308,13 +312,15 @@ public class MyController {
 	@GetMapping("/")
 	@ResponseBody
 	public String[] APIHome() {
-		String[] arr = new String[] { "http://localhost:8080", "http://localhost:8080/registerAPI?name=&password=", "http://localhost:8080/byNameAPI?name=", "http://localhost:8080/bookMeetingAPI" };
+		String[] arr = new String[] {"http://localhost:8080", "http://localhost:8080/registerAPI?name=&password=",
+				"http://localhost:8080/byNameAPI?name=", "http://localhost:8080/bookMeetingAPI" };
 		return arr;
 	}
 
 	@PostMapping("/registerAPI")
 	@ResponseBody
-	public String registerAPI(@RequestParam(required = true, value = "name") String name, @RequestParam(required = true, value = "password") String password) {
+	public String registerAPI(@RequestParam(required = true, value = "name") String name,
+			@RequestParam(required = true, value = "password") String password) {
 		String status = "Already Present";
 		Ent Ent = new Ent();
 		Ent.setName(name);
@@ -322,11 +328,11 @@ public class MyController {
 
 		ArrayList<String> err = new Validation().validateRegister(Ent);
 		if (err.isEmpty()) {
-			boolean doesUserExist = Repository.existsByName(name);
+			boolean doesUserExist = repository.existsByName(name);
 			if (!doesUserExist) {
-				status = DOMeeting.doRegisterEntity(Ent);
+				status = doMeeting.doRegisterEntity(Ent);
 			} else {
-				Ent = Repository.findTopByNameAndPassword(Ent.getName(),Ent.getPassword());
+				Ent = repository.findTopByNameAndPassword(Ent.getName(), Ent.getPassword());
 			}
 		} else {
 			status = err.toString();
@@ -339,47 +345,47 @@ public class MyController {
 	@ResponseBody
 	public List byNameAPI(@RequestParam(required = true, value = "name") String name) {
 		List list = new ArrayList<>();
-		Ent checkPassword = Repository.findTopByNameAndPassword(name , name);
+		Ent checkPassword = repository.findTopByNameAndPassword(name, name);
 		if (checkPassword.getPassword().equals(name)) {
 			list = new DOMeeting().findEntByName(name);
 		}
 		return list;
 	}
 
-	@PostMapping(path = "/bookMeetingAPI", produces = { "application/json" })
+	@PostMapping(path = "/bookMeetingAPI", produces = {"application/json" })
 	@ResponseBody
 	public String bookMeetingAPI(@RequestBody(required = true) Ent Ent) {
 		String status = "Already Present";
-		Ent checkPassword = Repository.findTopByNameAndPassword(Ent.getName() , Ent.getPassword());
-		Ent meetingWithEnt = Repository.findTopByName(Ent.getSubEnts().get(0).getMeetingWith()).orElse(null);
+		Ent checkPassword = repository.findTopByNameAndPassword(Ent.getName(), Ent.getPassword());
+		Ent meetingWithEnt = repository.findTopByName(Ent.getSubEnts().get(0).getMeetingWith()).orElse(null);
 		if (checkPassword == null || checkPassword.equals(new Ent())) {
 			status = "http://localhost:8080/registerAPI?name=";
-		} else if (meetingWithEnt==null) {
+		} else if (meetingWithEnt == null) {
 			status = "MeetingWith entity does not exist";
 		} else if (!checkPassword.getPassword().equals(Ent.getPassword())) {
 			status = "Invalid Password";
 		} else {
-			status = DOMeeting.bookMeeting(Ent , meetingWithEnt);
+			status = doMeeting.bookMeeting(Ent, meetingWithEnt);
 		}
 		return status;
 	}
-	
-	 @GetMapping("/listJSP")//the thymeleaf dependency needs to be commented out to run normal jsps
-	    public String listJSP(Model model) {
-		    List<Ent> list = Repository.findByName("awwab");
-	        model.addAttribute("books", list);
-	        return "lister";
-	    }
-	
-    @RequestMapping(method = RequestMethod.GET, path = "/welcome")
-    public String hello(Model model, @RequestParam(value="name", required=false, defaultValue="World") String name) {
-        model.addAttribute("name", name);
-        return "welcome";
-    }
-    
-    @RequestMapping(method = RequestMethod.GET, path = "/hello")
-    public String hello(@RequestParam(name = "name") String name, Model model) {
-        model.addAttribute("name", name);
-        return "hello";
-    }
+
+	@GetMapping("/listJSP") // the thymeleaf dependency needs to be commented out to run normal jsps
+	public String listJSP(Model model) {
+		List<Ent> list = repository.findByName("awwab");
+		model.addAttribute("books", list);
+		return "lister";
+	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/welcome")
+	public String hello(Model model, @RequestParam(value = "name", required = false, defaultValue = "World") String name) {
+		model.addAttribute("name", name);
+		return "welcome";
+	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/hello")
+	public String hello(@RequestParam(name = "name") String name, Model model) {
+		model.addAttribute("name", name);
+		return "hello";
+	}
 }

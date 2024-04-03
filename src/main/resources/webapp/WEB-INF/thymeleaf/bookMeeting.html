@@ -1,31 +1,30 @@
 <html lang="en">
 
 <head>
-	<title>Register Page</title>
+<title>Register Page</title>
 </head>
 <style>
-	.center {
-		border: 2px solid;
-		margin: auto;
-		width: 70%;
-		padding: 15px;
-		margin-top: 200px;
-	}
+.center {
+	border: 2px solid;
+	margin: auto;
+	width: 70%;
+	padding: 15px;
+	margin-top: 200px;
+}
 </style>
 
 <body>
 	<div class="center">
-		<form style="margin-left:25%;" action="#" th:action="@{/saveBookMeeting}" th:object="${Ent}" method="post">
-			NAME : <input type="text" th:field="*{name}">
+		<form style="margin-left: 25%;" action="#"
+			th:action="@{/saveBookMeeting}" th:object="${Ent}" method="post">
+			NAME : <input type="text" th:field="*{name}"> <br>
+			Password : <input type="password" th:field="*{password}"> <br>
+			Meeting With <input type="text" id="subEntName"
+				th:field="*{subEnts[0].meetingWith}"> <br> StartDate :
+			<input type="datetime-local" th:field="*{subEnts[0].meetingDate}">
+			<br> EndDate : <input type="datetime-local"
+				th:field="*{subEnts[0].meetingEndDate}"> <br>
 			<br>
-			Password : <input type="password" th:field="*{password}">
-			<br>
-			Meeting With <input type="text" id="subEntName" th:field="*{subEnts[0].meetingWith}">
-			<br>
-			StartDate : <input type="datetime-local" th:field="*{subEnts[0].meetingDate}">
-			<br>
-			EndDate : <input type="datetime-local" th:field="*{subEnts[0].meetingEndDate}">
-			<br><br>
 			<button style="margin-left: 10%;" type="submit">SAVE</button>
 		</form>
 	</div>

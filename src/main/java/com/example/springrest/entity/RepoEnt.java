@@ -8,17 +8,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
 public interface RepoEnt extends JpaRepository<Ent, Integer>, CrudRepository<Ent, Integer> {
-	public List<Ent> findByName(String name);
+	 List<Ent> findByName(String name);
 
-	public Optional<Ent> findTopByName(String name);
+	 Optional<Ent> findTopByName(String name);
 	
-	public Ent findTopByNameAndPassword(String name, String password);
+	 Ent findTopByNameAndPassword(String name, String password);
 
-	public boolean existsById(long Id);
+	 boolean existsById(long Id);
 
-	public boolean existsByName(String name);
+	 boolean existsByName(String name);
 
-	public boolean existsByNameAndPassword(String name, String password);
+	 boolean existsByNameAndPassword(String name, String password);
 
 	//public boolean existsByMeetingDate(LocalDateTime meetingDate);
 
@@ -28,7 +28,7 @@ public interface RepoEnt extends JpaRepository<Ent, Integer>, CrudRepository<Ent
 
 	//public Optional<Ent> findTopByMeetingDate(Date meetingDate);
 
-	public Optional<Ent> findTopByNameAndSubEntsMeetingDateLessThanEqualAndSubEntsMeetingEndDateGreaterThanEqual(String name, Date meetingStartDate, Date meetingEndDate);
+	 Optional<Ent> findTopByNameAndSubEntsMeetingDateLessThanEqualAndSubEntsMeetingEndDateGreaterThanEqual(String name, Date meetingStartDate, Date meetingEndDate);
 //select * from meetingcalenderhibernate where name=? and meeting_date>=? and meeting_end_date<=? limit 1
 
 }

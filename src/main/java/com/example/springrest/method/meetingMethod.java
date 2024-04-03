@@ -80,17 +80,15 @@ public class meetingMethod {
 		String[] meetingArrFrom = null;
 		try {
 			ResultSet rsTo = stmt.executeQuery("SELECT * FROM  meetingcalender WHERE name='" + to + "'");
-			while (rsTo.next()) {
+			if (rsTo.next()) {
 				meetingValTo = rsTo.getString("meeting");
 				meetingArrTo = meetingValTo.split("\\,");
-				break;
 			}
 
 			ResultSet rsFrom = stmt.executeQuery("SELECT * FROM  meetingcalender WHERE name='" + from + "'");
-			while (rsFrom.next()) {
+			if (rsFrom.next()) {
 				meetingValFrom = rsFrom.getString("meeting");
 				meetingArrFrom = meetingValFrom.split("\\,");
-				break;
 			}
 
 			if (meetingArrFrom == null) {

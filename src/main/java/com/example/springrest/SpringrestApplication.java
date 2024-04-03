@@ -11,7 +11,7 @@ import com.example.springrest.entity.RepoEnt;
 @SpringBootApplication
 @EnableJpaRepositories(basePackageClasses = RepoEnt.class)
 @EnableTransactionManagement
-@EnableAspectJAutoProxy()  
+@EnableAspectJAutoProxy()
 public class SpringrestApplication {
 
 	public static void main(String[] args) {

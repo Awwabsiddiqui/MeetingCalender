@@ -377,15 +377,30 @@ public class MyController {
 		return "lister";
 	}
 
-	@RequestMapping(method = RequestMethod.GET, path = "/welcome")
-	public String hello(Model model, @RequestParam(value = "name", required = false, defaultValue = "World") String name) {
-		model.addAttribute("name", name);
-		return "welcome";
+//	@RequestMapping(method = RequestMethod.GET, path = "/FMhome")
+//	public String hello(Model model, @RequestParam(value = "name", required = false, defaultValue = "World") String name) {
+//		model.addAttribute("name", name);
+//		return "FMhome";
+//	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/homeFM")
+	public ModelAndView homeFM() {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("homeFM");
+		return modelAndView;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, path = "/hello")
-	public String hello(@RequestParam(name = "name") String name, Model model) {
-		model.addAttribute("name", name);
-		return "hello";
+	@RequestMapping("/searchFM")
+	public ModelAndView searchFM(Model model) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("searchFM");
+		Ent ent = new Ent();
+//		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		ent.setName(userDetails.getUsername());
+//		ent.setPassword(userDetails.getPassword());
+		modelAndView.addObject("Ent", ent);
+		modelAndView.addObject("status", "statusss");
+		return modelAndView;
 	}
+
 }

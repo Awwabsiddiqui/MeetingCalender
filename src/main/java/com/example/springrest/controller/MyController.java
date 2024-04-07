@@ -2,6 +2,7 @@ package com.example.springrest.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +30,9 @@ import com.example.springrest.entity.SubEnt;
 import com.example.springrest.method.DOMeeting;
 import com.example.springrest.method.Validation;
 import com.example.springrest.method.meetingMethod;
+
+import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModelException;
 
 @Controller
 public class MyController {
@@ -420,7 +425,22 @@ public class MyController {
 			modelAndView.addObject("status", "Wrong Password");
 			modelAndView.setViewName("searchFM");
 		}
+		HashMap<String, String> hmTest = new HashMap<>();
+		hmTest.put("1", "one");
+		hmTest.put("2", "two");
+		hmTest.put("3", "tthree");
+		modelAndView.addObject("hmTest", hmTest);
 		modelAndView.addObject("Ent", Ent);
+		modelAndView.addObject("lastChar", new LastCharMethod());
 		return modelAndView;
+	}
+
+	public class LastCharMethod implements TemplateMethodModelEx {
+		public Object exec(List arguments) throws TemplateModelException {
+			if (arguments.size() != 1 || StringUtils.isEmpty(arguments.get(0)))
+				throw new TemplateModelException("Wrong arguments!");
+			String argument = arguments.get(0).toString();
+			return argument.charAt(argument.length() - 1);
+		}
 	}
 }

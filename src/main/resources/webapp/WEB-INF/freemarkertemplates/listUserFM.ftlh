@@ -18,8 +18,35 @@
 <body>
 <html xmlns:th="https://thymeleaf.org">
 <div class="center">
+<#attempt>
+<#macro hello inputValue colorValue>
+	<@fontColorer colorVal=colorValue>
+ 		Hello ${inputValue}
+ 	</@fontColorer>
+</#macro>
+
+<#macro fontColorer colorVal>
+	<font color="${colorVal}">
+		<#nested>
+	</font>
+</#macro>
+
 	<u>
-		<h2 th:text="${Ent.name}"></h2>
+	<#if Ent.name??>
+		<h2><@hello  inputValue=Ent.name colorValue="orange" />  
+		<br>
+		${Ent.name?upper_case}
+	</#if>
+		<h2>${Ent???c}</h2>
+		
+		<@fontColorer colorVal="blue">
+			${lastChar(Ent.name)}
+		</@>fontColorer>
+		<#if Ent.name='awwab'>
+			admin
+			<#else>
+			non admin
+		</#if>
 	</u>
 	<table border="1px" style="border-color: bisque;">
 		<tr>
@@ -28,7 +55,7 @@
 			<th>Meeting Start Date</th>
 			<th>Meeting End Date</th>
 		</tr>
-		
+		<#if list??>
 		  <#list list as subEnt>
                     <tr>
                    		<td>${Ent.name}</td>
@@ -37,8 +64,17 @@
                         <td>${(subEnt.meetingEndDate)?string["dd-MMM-yyyy hh:mm"]}</td>
                     </tr>
                 </#list>
-		
+		</#if>
 	</table>
+	
+	<#list hmTest?keys as key>
+    ${key} = ${hmTest[key]}
+</#list>
+
+<#recover>
+	someError
+
+	</#attempt>
 </div>
 
 </html>

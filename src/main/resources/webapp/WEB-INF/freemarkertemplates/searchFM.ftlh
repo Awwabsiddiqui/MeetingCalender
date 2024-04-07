@@ -13,10 +13,10 @@
 <head>
 <title>input Page</title>
 </head>
-
+<#include '/menuFM.ftlh'>
 <body>
 	<div class="center">
-		<h4 style="color: orangered;">${status}</h4>
+		<h4 style="color: orangered;">${status!'NA'}</h4>
 		<h4 style="color: orangered;">${title!'NA'}</h4>
 		
 		  <#assign urlAction>/notes/add</#assign>
@@ -37,16 +37,6 @@
             </table>
             <input type="submit" value="${submitTitle}" />
         </form>
-						
-		<!--<form action="" method="POST">
-				Name:
-				<@spring.bind "Ent.name"/>
-				<input type="text" name="${spring.status.expression}" value="${spring.status.value}"/><br />
-				<#list spring.status.errorMessages as error> <b>${error}</b> <br /> </#list>
-				<br />
-				<input type="submit" value="submit"/>
-			</form>
-		-->
 	</div>
 </body>
 

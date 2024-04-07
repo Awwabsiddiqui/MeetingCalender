@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -383,6 +384,9 @@ public class MyController {
 //		return "FMhome";
 //	}
 
+	@Value("${msg.title}")
+	public String title;
+
 	@RequestMapping(method = RequestMethod.GET, path = "/homeFM")
 	public ModelAndView homeFM() {
 		ModelAndView modelAndView = new ModelAndView();
@@ -403,4 +407,20 @@ public class MyController {
 		return modelAndView;
 	}
 
+	@GetMapping(value = "/listUserFM")
+	public ModelAndView listUserFM(@ModelAttribute("Ent") Ent Ent) {
+		ModelAndView modelAndView = new ModelAndView();
+		Ent checkPassword = repository.findTopByNameAndPassword(Ent.getName(), Ent.getPassword());
+		if (checkPassword != null && checkPassword.getPassword().equals(Ent.getPassword())) {
+			modelAndView.addObject("list", checkPassword.getSubEnts());
+			modelAndView.addObject("status", "found");
+			modelAndView.setViewName("listUserFM");
+		} else {
+			modelAndView.addObject("list", new ArrayList<>());
+			modelAndView.addObject("status", "Wrong Password");
+			modelAndView.setViewName("searchFM");
+		}
+		modelAndView.addObject("Ent", Ent);
+		return modelAndView;
+	}
 }

@@ -16,7 +16,17 @@
 <#include '/menuFM.ftlh'>
 <body>
 	<div class="center">
-	some Error
+	Error => 
+	<br>
+	
+	${ERROR_STATUS_CODE!'ERROR_STATUS_CODE'}
+	<br>
+	${ERROR_EXCEPTION!'ERROR_EXCEPTION'}
+	<br>
+	${ERROR_EXCEPTION_TYPE!'ERROR_EXCEPTION_TYPE'}
+	<br>
+	${ERROR_MESSAGE!'ERROR_MESSAGE'}
+	<br>
 	</div>
 </body>
 

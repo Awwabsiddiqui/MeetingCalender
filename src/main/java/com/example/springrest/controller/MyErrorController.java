@@ -6,23 +6,21 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MyErrorController implements ErrorController {
 
 	@RequestMapping("/error")
-	public String handleError(HttpServletRequest request) {
-		Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+	public ModelAndView handleError(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
 
-		if (status != null) {
-			Integer statusCode = Integer.valueOf(status.toString());
+		modelAndView.addObject("ERROR_STATUS_CODE", request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
+		modelAndView.addObject("ERROR_EXCEPTION", request.getAttribute(RequestDispatcher.ERROR_EXCEPTION));
+		modelAndView.addObject("ERROR_EXCEPTION_TYPE", request.getAttribute(RequestDispatcher.ERROR_EXCEPTION_TYPE));
+		modelAndView.addObject("ERROR_MESSAGE", request.getAttribute(RequestDispatcher.ERROR_MESSAGE));
 
-//			if (statusCode == HttpStatus.NOT_FOUND.value()) {
-//				return "error-404";
-//			} else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-//				return "error-500";
-//			}
-		}
-		return "error";
+		modelAndView.setViewName("error");
+		return modelAndView;
 	}
 }

@@ -19,15 +19,14 @@
 		<h4 style="color: orangered;">${status!'NA'}</h4>
 		<h4 style="color: orangered;">${title!'NA'}</h4>
 		
-		  <#assign urlAction>/notes/add</#assign>
-            <#assign submitTitle>SEARCH</#assign>
+		  <#assign urlAction>someURL</#assign>
 
-		  <form action="listUserFM" name="listUserFM" method="GET" >
+		  <form action="/listUserFM" method="post" >
             <table border="0">
                 <tr>
                     <td>Title</td>
                     <td>:</td>
-                    <td><input type="text" name="name" value="${(Ent.name)!''}" /></td>              
+                    <td><input type="text" name="name" value="${(Ent.name)!''}" /></td>    
                 </tr>
                 <tr>
                     <td>Content</td>
@@ -35,7 +34,7 @@
                    <td><input type="text" name="password" value="${(Ent.password)!''}" /></td>    
                 </tr>
             </table>
-            <input type="submit" value="${submitTitle}" />
+            <input type="submit" value="submit"/>
         </form>
 	</div>
 </body>

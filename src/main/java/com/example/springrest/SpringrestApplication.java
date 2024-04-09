@@ -18,4 +18,5 @@ public class SpringrestApplication {
 		SpringApplication.run(SpringrestApplication.class, args);
 	}
 //https://freemarker.apache.org/docs/
+	// https://freemarker.apache.org/docs/pgui_misc_servlet.html
 }

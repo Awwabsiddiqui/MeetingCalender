@@ -1,4 +1,3 @@
-<#import "freemarker.log" as log>
 <script src="/jqjs/jquery.js" type="text/javascript" ></script>
 <script>
 	

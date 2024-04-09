@@ -412,8 +412,8 @@ public class MyController {
 		return modelAndView;
 	}
 
-	@GetMapping(value = "/listUserFM")
-	public ModelAndView listUserFM(@ModelAttribute("Ent") Ent Ent) {
+	@PostMapping(value = "/listUserFM")
+	public ModelAndView listUserFM(@ModelAttribute("Ent") Ent Ent, Model model) {
 		ModelAndView modelAndView = new ModelAndView();
 		Ent checkPassword = repository.findTopByNameAndPassword(Ent.getName(), Ent.getPassword());
 		if (checkPassword != null && checkPassword.getPassword().equals(Ent.getPassword())) {
